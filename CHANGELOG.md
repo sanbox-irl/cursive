@@ -11,25 +11,40 @@
 
 ### API updates
 
-- `SelectView::{item, with_all}` now accept `S: Into<StyledString>` for colored labels.
+- `SelectView::{item, with_all}` now accept `S: Into<StyledString>` for
+  colored labels.
 - Add `ScrollView::scroll_to_important_area`.
 - Add `LinearLayout::set_focus_index`.
 - Add `XY::{sum, product}`
 - `view::scroll` is now a public module
 - Add `Cursive::process_events` and `Cursive::post_events`
     - This gives users finer control than `Cursive::step`
+- `LinearLayout::{child,add_child,insert_child}` now take `V: IntoBoxedView`
+  as bound rather than `V: View`.
+    - This makes it possible to give it `Box<dyn View>` without re-boxing it.
+- Add `EnableableView::get_inner`
+- Add `PaddedView::{get_inner,get_inner_mut}`
 
 ### Improvements
 
-- Changed the default color for `TitleSecondary` from yellow to light blue.
-- Reduced dependencies (`toml` is now optional, removed `hashbrown`).
+- Change the default color for `TitleSecondary` from yellow to light blue.
+- Reduce dependencies (`toml` is now optional, removed `hashbrown`).
 - `Cursive::default()` now fallbacks do dummy backend if no other is available.
+- Add documentation for the focus and `important_area` concepts of the `view`
+  module.
 
 ### Bugfixes
 
-- Fixed `ScrollView::show_scrollbars()`
-- Fixed layout for `BoxView` with some size constraints.
+- Fix `ScrollView::show_scrollbars()`
+- Fix layout for `BoxView` with some size constraints.
 - On Windows, do not print unix-specific character during initialization.
+- Fix potential panic in `MenuPopup` with mouse events.
+- Fix bold attribute for termion and crossterm backends.
+- Fix underline and reverse attributes for the crossterm backend.
+- Fix "enter" and "tab" input for the crossterm backend.
+- Fix mouse input on crossterm backend:
+    - Fixed position offset.
+    - Correctly disable mouse mode when application exits.
 
 ## 0.13.0
 
