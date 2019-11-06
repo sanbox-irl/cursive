@@ -7,17 +7,17 @@ use crate::Printer;
 /// Wrapper view that adds a shadow.
 ///
 /// It reserves a 1 pixel border on each side.
-pub struct ShadowView<T: View> {
+pub struct Shadow<T: View> {
     view: T,
     top_padding: bool,
     left_padding: bool,
     // TODO: invalidate if we change the padding?
 }
 
-impl<T: View> ShadowView<T> {
+impl<T: View> Shadow<T> {
     /// Wraps the given view.
     pub fn new(view: T) -> Self {
-        ShadowView {
+        Shadow {
             view,
             top_padding: true,
             left_padding: true,
@@ -51,7 +51,7 @@ impl<T: View> ShadowView<T> {
     inner_getters!(self.view: T);
 }
 
-impl<T: View> ViewWrapper for ShadowView<T> {
+impl<T: View> ViewWrapper for Shadow<T> {
     wrap_impl!(self.view: T);
 
     fn wrap_required_size(&mut self, req: Vec2) -> Vec2 {

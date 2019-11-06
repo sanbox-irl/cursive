@@ -1,5 +1,5 @@
 use crate::view::{View, ViewPath, ViewWrapper};
-use crate::views::{IdView, ViewRef};
+use crate::views::{Named, ViewRef};
 use std::any::Any;
 
 /// Provides `call_on<V: View>` to views.
@@ -34,14 +34,14 @@ pub trait Finder {
         self.call_on(&Selector::Id(id), callback)
     }
 
-    /// Convenient method to find a view wrapped in an [`IdView`].
+    /// Convenient method to find a view wrapped in an [`Named`].
     ///
-    /// [`IdView`]: views/struct.IdView.html
+    /// [`Named`]: views/struct.Named.html
     fn find_id<V>(&mut self, id: &str) -> Option<ViewRef<V>>
     where
         V: View + Any,
     {
-        self.call_on_id(id, IdView::<V>::get_mut)
+        self.call_on_id(id, Named::<V>::get_mut)
     }
 }
 
@@ -65,9 +65,9 @@ impl<T: View> Finder for T {
                     if v.is::<V>() {
                         *result_ref =
                             v.downcast_mut::<V>().map(|v| callback(v));
-                    } else if v.is::<IdView<V>>() {
+                    } else if v.is::<Named<V>>() {
                         *result_ref = v
-                            .downcast_mut::<IdView<V>>()
+                            .downcast_mut::<Named<V>>()
                             .and_then(|v| v.with_view_mut(callback));
                     }
                 }

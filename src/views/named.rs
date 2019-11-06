@@ -10,7 +10,7 @@ use std::rc::Rc;
 /// This lets other views refer to this one using a string identifier.
 ///
 /// See [`Identifiable`](crate::view::Identifiable) for an easy way to wrap any view with it.
-pub struct IdView<V: View> {
+pub struct Named<V: View> {
     view: Rc<RefCell<V>>,
     id: String,
 }
@@ -22,10 +22,10 @@ pub struct IdView<V: View> {
 /// [`RefMut`]: https://doc.rust-lang.org/std/cell/struct.RefMut.html
 pub type ViewRef<V> = OwningHandle<RcRef<RefCell<V>>, RefMut<'static, V>>;
 
-impl<V: View> IdView<V> {
-    /// Wraps `view` in a new `IdView`.
+impl<V: View> Named<V> {
+    /// Wraps `view` in a new `Named`.
     pub fn new<S: Into<String>>(id: S, view: V) -> Self {
-        IdView {
+        Named {
             view: Rc::new(RefCell::new(view)),
             id: id.into(),
         }
@@ -45,7 +45,7 @@ impl<V: View> IdView<V> {
     }
 }
 
-impl<T: View + 'static> ViewWrapper for IdView<T> {
+impl<T: View + 'static> ViewWrapper for Named<T> {
     type V = T;
 
     fn with_view<F, R>(&self, f: F) -> Option<R>

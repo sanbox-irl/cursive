@@ -7,24 +7,24 @@ use crate::Printer;
 use unicode_width::UnicodeWidthStr;
 
 /// View used for debugging, showing logs.
-pub struct DebugView {
+pub struct DebugConsole {
     // TODO: wrap log lines if needed, and save the line splits here.
 }
 
-impl DebugView {
-    /// Creates a new DebugView.
+impl DebugConsole {
+    /// Creates a new DebugConsole.
     pub fn new() -> Self {
-        DebugView {}
+        DebugConsole {}
     }
 }
 
-impl Default for DebugView {
+impl Default for DebugConsole {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl View for DebugView {
+impl View for DebugConsole {
     fn draw(&self, printer: &Printer<'_, '_>) {
         let logs = logger::LOGS.lock().unwrap();
         // Only print the last logs, so skip what doesn't fit

@@ -7,22 +7,22 @@ use crate::With;
 ///
 /// By default, it simply forwards all calls to the inner view.
 ///
-/// When hidden (with `HideableView::hide()`), it will appear as a zero-sized
+/// When hidden (with `Hideable::hide()`), it will appear as a zero-sized
 /// invisible view, will not take focus and will not accept input.
 ///
-/// It can be made visible again with `HideableView::unhide()`.
-pub struct HideableView<V> {
+/// It can be made visible again with `Hideable::unhide()`.
+pub struct Hideable<V> {
     view: V,
     visible: bool,
     invalidated: bool,
 }
 
-impl<V> HideableView<V> {
-    /// Creates a new HideableView around `view`.
+impl<V> Hideable<V> {
+    /// Creates a new Hideable around `view`.
     ///
     /// It will be visible by default.
     pub fn new(view: V) -> Self {
-        HideableView {
+        Hideable {
             view,
             visible: true,
             invalidated: true,
@@ -64,7 +64,7 @@ impl<V> HideableView<V> {
     inner_getters!(self.view: V);
 }
 
-impl<V: View> ViewWrapper for HideableView<V> {
+impl<V: View> ViewWrapper for Hideable<V> {
     type V = V;
 
     fn with_view<F, R>(&self, f: F) -> Option<R>

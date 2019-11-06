@@ -26,9 +26,9 @@ use std::rc::Rc;
 ///
 /// ```rust
 /// # use cursive::Cursive;
-/// # use cursive::views::{SelectView, Dialog, TextView};
+/// # use cursive::views::{Select, Dialog, Text};
 /// # use cursive::align::HAlign;
-/// let mut time_select = SelectView::new().h_align(HAlign::Center);
+/// let mut time_select = Select::new().h_align(HAlign::Center);
 /// time_select.add_item("Short", 1);
 /// time_select.add_item("Medium", 5);
 /// time_select.add_item("Long", 10);
@@ -36,7 +36,7 @@ use std::rc::Rc;
 /// time_select.set_on_submit(|s, time| {
 ///     s.pop_layer();
 ///     let text = format!("You will wait for {} minutes...", time);
-///     s.add_layer(Dialog::around(TextView::new(text))
+///     s.add_layer(Dialog::around(Text::new(text))
 ///                     .button("Quit", |s| s.quit()));
 /// });
 ///
@@ -44,7 +44,7 @@ use std::rc::Rc;
 /// siv.add_layer(Dialog::around(time_select)
 ///                      .title("How long is your wait?"));
 /// ```
-pub struct SelectView<T = String> {
+pub struct Select<T = String> {
     // The core of the view: we store a list of items
     // `Item` is more or less a `(String, Rc<T>)`.
     items: Vec<Item<T>>,
@@ -78,16 +78,16 @@ pub struct SelectView<T = String> {
     last_size: Vec2,
 }
 
-impl<T: 'static> Default for SelectView<T> {
+impl<T: 'static> Default for Select<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T: 'static> SelectView<T> {
-    /// Creates a new empty SelectView.
+impl<T: 'static> Select<T> {
+    /// Creates a new empty Select.
     pub fn new() -> Self {
-        SelectView {
+        Select {
             items: Vec::new(),
             enabled: true,
             focus: Rc::new(Cell::new(0)),
@@ -176,11 +176,11 @@ impl<T: 'static> SelectView<T> {
     ///
     /// ```
     /// use cursive::traits::Identifiable;
-    /// use cursive::views::{TextView, SelectView};
+    /// use cursive::views::{Text, Select};
     ///
-    /// let text_view = TextView::new("").with_id("text");
+    /// let text_view = Text::new("").with_id("text");
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .item("One", 1)
     ///     .item("Two", 2)
     ///     .on_select(|s, item| {
@@ -191,7 +191,7 @@ impl<T: 'static> SelectView<T> {
     ///         };
     ///
     ///         // Update the textview with the currently selected item.
-    ///         s.call_on_id("text", |v: &mut TextView| {
+    ///         s.call_on_id("text", |v: &mut Text| {
     ///             v.set_content(content);
     ///         }).unwrap();
     ///     });
@@ -231,9 +231,9 @@ impl<T: 'static> SelectView<T> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::{Dialog, SelectView};
+    /// use cursive::views::{Dialog, Select};
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .item("One", 1)
     ///     .item("Two", 2)
     ///     .on_submit(|s, item| {
@@ -261,9 +261,9 @@ impl<T: 'static> SelectView<T> {
     ///
     /// ```
     /// use cursive::align;
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .item("One", 1)
     ///     .align(align::Align::top_center());
     /// ```
@@ -311,9 +311,9 @@ impl<T: 'static> SelectView<T> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// let mut select_view = SelectView::new();
+    /// let mut select_view = Select::new();
     ///
     /// select_view.add_item("Item 1", 1);
     /// select_view.add_item("Item 2", 2);
@@ -326,8 +326,8 @@ impl<T: 'static> SelectView<T> {
     ///
     /// ```
     /// use cursive::Cursive;
-    /// use cursive::views::{SelectView, TextView};
-    /// let select = SelectView::new()
+    /// use cursive::views::{Select, Text};
+    /// let select = Select::new()
     ///     .item("Short", 1);
     /// assert_eq!(select.get_item(0), Some(("Short", &1)));
     /// ```
@@ -391,9 +391,9 @@ impl<T: 'static> SelectView<T> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .item("Item 1", 1)
     ///     .item("Item 2", 2)
     ///     .item("Surprise item", 42);
@@ -420,10 +420,10 @@ impl<T: 'static> SelectView<T> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// // Create a SelectView with 100 items
-    /// let select_view = SelectView::new()
+    /// // Create a Select with 100 items
+    /// let select_view = Select::new()
     ///     .with_all((1u8..100).into_iter().map(|i| {
     ///         (format!("Item {}", i), i)
     ///     }));
@@ -463,9 +463,9 @@ impl<T: 'static> SelectView<T> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .item("Item 1", 1)
     ///     .item("Item 2", 2)
     ///     .item("Item 3", 3);
@@ -481,9 +481,9 @@ impl<T: 'static> SelectView<T> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// let mut select_view = SelectView::new();
+    /// let mut select_view = Select::new();
     /// assert!(select_view.is_empty());
     ///
     /// select_view.add_item("Item 1", 1);
@@ -551,7 +551,7 @@ impl<T: 'static> SelectView<T> {
     /// You should run this callback with a `&mut Cursive`.
     pub fn set_selection(&mut self, i: usize) -> Callback {
         // TODO: Check if `i >= self.len()` ?
-        // assert!(i < self.len(), "SelectView: trying to select out-of-bound");
+        // assert!(i < self.len(), "Select: trying to select out-of-bound");
         // Or just cap the ID?
         let i = if self.is_empty() {
             0
@@ -582,8 +582,8 @@ impl<T: 'static> SelectView<T> {
     ///
     /// ```rust
     /// # use cursive::Cursive;
-    /// # use cursive::views::SelectView;
-    /// fn select_up(siv: &mut Cursive, view: &mut SelectView<()>) {
+    /// # use cursive::views::Select;
+    /// fn select_up(siv: &mut Cursive, view: &mut Select<()>) {
     ///     let cb = view.select_up(1);
     ///     cb(siv);
     /// }
@@ -777,7 +777,7 @@ impl<T: 'static> SelectView<T> {
     }
 }
 
-impl SelectView<String> {
+impl Select<String> {
     /// Convenient method to use the label as value.
     pub fn add_item_str<S: Into<String>>(&mut self, label: S) {
         let label = label.into();
@@ -789,9 +789,9 @@ impl SelectView<String> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .item_str("Paris")
     ///     .item_str("New York")
     ///     .item_str("Tokyo");
@@ -814,8 +814,8 @@ impl SelectView<String> {
     /// # Examples
     ///
     /// ```
-    /// # use cursive::views::SelectView;
-    /// let mut select_view = SelectView::new();
+    /// # use cursive::views::Select;
+    /// let mut select_view = Select::new();
     /// select_view.add_all_str(vec!["a", "b", "c"]);
     /// ```
     pub fn add_all_str<S, I>(&mut self, iter: I)
@@ -835,11 +835,11 @@ impl SelectView<String> {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::SelectView;
+    /// use cursive::views::Select;
     ///
     /// let text = "..."; // Maybe read some config file
     ///
-    /// let select_view = SelectView::new()
+    /// let select_view = Select::new()
     ///     .with_all_str(text.lines());
     /// ```
     pub fn with_all_str<S, I>(self, iter: I) -> Self
@@ -851,7 +851,7 @@ impl SelectView<String> {
     }
 }
 
-impl<T: 'static> SelectView<T>
+impl<T: 'static> Select<T>
 where
     T: Ord,
 {
@@ -866,7 +866,7 @@ where
     }
 }
 
-impl<T: 'static> View for SelectView<T> {
+impl<T: 'static> View for Select<T> {
     fn draw(&self, printer: &Printer<'_, '_>) {
         self.last_offset.set(printer.offset);
 
@@ -987,7 +987,7 @@ mod tests {
     #[test]
     fn select_view_sorting() {
         // We add items in no particular order, from going by their label.
-        let mut view = SelectView::new();
+        let mut view = Select::new();
         view.add_item_str("Y");
         view.add_item_str("Z");
         view.add_item_str("X");
@@ -1009,7 +1009,7 @@ mod tests {
     #[test]
     fn select_view_sorting_with_comparator() {
         // We add items in no particular order, from going by their value.
-        let mut view = SelectView::new();
+        let mut view = Select::new();
         view.add_item("Y", 2);
         view.add_item("Z", 1);
         view.add_item("X", 3);
@@ -1036,7 +1036,7 @@ mod tests {
             key: i32,
         }
 
-        let mut view = SelectView::new();
+        let mut view = Select::new();
         view.add_item("Y", MyStruct { key: 2 });
         view.add_item("Z", MyStruct { key: 1 });
         view.add_item("X", MyStruct { key: 3 });
@@ -1058,7 +1058,7 @@ mod tests {
     #[test]
     fn select_view_sorting_orderable_items() {
         // We add items in no particular order, from going by their value.
-        let mut view = SelectView::new();
+        let mut view = Select::new();
         view.add_item("Y", 2);
         view.add_item("Z", 1);
         view.add_item("X", 3);

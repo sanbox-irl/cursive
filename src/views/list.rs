@@ -10,9 +10,9 @@ use log::debug;
 use std::rc::Rc;
 use unicode_width::UnicodeWidthStr;
 
-/// Represents a child from a [`ListView`].
+/// Represents a child from a [`List`].
 ///
-/// [`ListView`]: struct.ListView.html
+/// [`List`]: struct.List.html
 pub enum ListChild {
     /// A single row, with a label and a view.
     Row(String, Box<dyn View>),
@@ -37,7 +37,7 @@ impl ListChild {
 }
 
 /// Displays a list of elements.
-pub struct ListView {
+pub struct List {
     children: Vec<ListChild>,
     focus: usize,
     // This callback is called when the selection is changed.
@@ -45,12 +45,12 @@ pub struct ListView {
     last_size: Vec2,
 }
 
-new_default!(ListView);
+new_default!(List);
 
-impl ListView {
-    /// Creates a new, empty `ListView`.
+impl List {
+    /// Creates a new, empty `List`.
     pub fn new() -> Self {
-        ListView {
+        List {
             children: Vec::new(),
             focus: 0,
             on_select: None,
@@ -272,7 +272,7 @@ fn try_focus(
     }
 }
 
-impl View for ListView {
+impl View for List {
     fn draw(&self, printer: &Printer<'_, '_>) {
         if self.children.is_empty() {
             return;

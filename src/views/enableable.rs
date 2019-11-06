@@ -1,6 +1,6 @@
 use crate::event::{Event, EventResult};
-use crate::view::{View, ViewWrapper};
-use crate::Printer;
+use crate::view::ViewWrapper;
+use crate::{Printer, View};
 
 /// Wrapper around another view that can be enabled/disabled at will.
 ///
@@ -10,15 +10,15 @@ use crate::Printer;
 ///
 /// ```
 /// use cursive::Cursive;
-/// use cursive::views::{Button, EnableableView, Checkbox, LinearLayout};
+/// use cursive::views::{Button, Enableable, Checkbox, LinearLayout};
 /// use cursive::traits::Identifiable;
 ///
 /// let mut siv = Cursive::dummy();
 ///
 /// siv.add_layer(LinearLayout::vertical()
-///     .child(EnableableView::new(Checkbox::new()).with_id("my_view"))
+///     .child(Enableable::new(Checkbox::new()).with_id("my_view"))
 ///     .child(Button::new("Toggle", |s| {
-///         s.call_on_id("my_view", |v: &mut EnableableView<Checkbox>| {
+///         s.call_on_id("my_view", |v: &mut Enableable<Checkbox>| {
 ///             // This will disable (or re-enable) the checkbox, preventing the user from
 ///             // interacting with it.
 ///             v.set_enabled(!v.is_enabled());
@@ -26,17 +26,17 @@ use crate::Printer;
 ///     }))
 /// );
 /// ```
-pub struct EnableableView<V> {
+pub struct Enableable<V> {
     view: V,
     enabled: bool,
 }
 
-impl<V> EnableableView<V> {
-    /// Creates a new `EnableableView` around `view`.
+impl<V> Enableable<V> {
+    /// Creates a new `Enableable` around `view`.
     ///
     /// It will be enabled by default.
     pub fn new(view: V) -> Self {
-        EnableableView {
+        Enableable {
             view,
             enabled: true,
         }
@@ -46,7 +46,7 @@ impl<V> EnableableView<V> {
     inner_getters!(self.view: V);
 }
 
-impl<V: View> ViewWrapper for EnableableView<V> {
+impl<V: View> ViewWrapper for Enableable<V> {
     wrap_impl!(self.view: V);
 
     fn wrap_on_event(&mut self, event: Event) -> EventResult {

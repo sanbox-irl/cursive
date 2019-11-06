@@ -12,23 +12,23 @@ use crate::Printer;
 /// # Examples
 ///
 /// ```rust
-/// # use cursive::views::{TextView, PaddedView};
+/// # use cursive::views::{Text, Padded};
 /// // Adds 2 columns of padding to the left and to the right.
-/// let view = PaddedView::new(
+/// let view = Padded::new(
 ///     ((2,2), (0,0)), // ((left, right), (top, bottom))
-///     TextView::new("Padded text")
+///     Text::new("Padded text")
 /// );
 /// ```
-pub struct PaddedView<V> {
+pub struct Padded<V> {
     view: V,
     margins: Margins,
 }
 
-impl<V: View> PaddedView<V> {
-    /// Wraps `view` in a new `PaddedView` with the given margins.
+impl<V: View> Padded<V> {
+    /// Wraps `view` in a new `Padded` with the given margins.
     pub fn new<M: Into<Margins>>(margins: M, view: V) -> Self {
         let margins = margins.into();
-        PaddedView { view, margins }
+        Padded { view, margins }
     }
 
     /// Sets the margins for this view.
@@ -40,7 +40,7 @@ impl<V: View> PaddedView<V> {
     inner_getters!(self.view: V);
 }
 
-impl<V: View> ViewWrapper for PaddedView<V> {
+impl<V: View> ViewWrapper for Padded<V> {
     wrap_impl!(self.view: V);
 
     fn wrap_required_size(&mut self, req: Vec2) -> Vec2 {

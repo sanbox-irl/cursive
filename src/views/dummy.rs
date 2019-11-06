@@ -4,9 +4,9 @@ use crate::Printer;
 /// Dummy view.
 ///
 /// Doesn't print anything. Minimal size is (1,1).
-pub struct DummyView;
+pub struct Dummy;
 
-impl View for DummyView {
+impl View for Dummy {
     fn draw(&self, _: &Printer<'_, '_>) {}
 
     fn needs_relayout(&self) -> bool {

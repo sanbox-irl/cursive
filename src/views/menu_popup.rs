@@ -7,7 +7,7 @@ use crate::rect::Rect;
 use crate::vec::Vec2;
 use crate::view::scroll;
 use crate::view::{Position, View};
-use crate::views::OnEventView;
+use crate::views::OnEvent;
 use crate::Cursive;
 use crate::Printer;
 use crate::With;
@@ -202,7 +202,7 @@ impl MenuPopup {
             let action_cb = action_cb.clone();
             s.screen_mut().add_layer_at(
                 Position::parent(offset),
-                OnEventView::new(MenuPopup::new(Rc::clone(&tree)).on_action(
+                OnEvent::new(MenuPopup::new(Rc::clone(&tree)).on_action(
                     move |s| {
                         // This will happen when the subtree popup
                         // activates something;

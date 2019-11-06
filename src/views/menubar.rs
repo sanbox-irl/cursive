@@ -5,7 +5,7 @@ use crate::rect::Rect;
 use crate::theme::ColorStyle;
 use crate::vec::Vec2;
 use crate::view::{Position, View};
-use crate::views::{MenuPopup, OnEventView};
+use crate::views::{MenuPopup, OnEvent};
 use crate::Cursive;
 use crate::Printer;
 use std::rc::Rc;
@@ -231,11 +231,11 @@ fn show_child(s: &mut Cursive, offset: Vec2, menu: Rc<MenuTree>) {
     // Also adds two key callbacks on this new view, to handle `left` and
     // `right` key presses.
     // (If the view itself listens for a `left` or `right` press, it will
-    // consume it before our OnEventView. This means sub-menus can properly
+    // consume it before our OnEvent. This means sub-menus can properly
     // be entered.)
     s.screen_mut().add_layer_at(
         Position::absolute(offset),
-        OnEventView::new(
+        OnEvent::new(
             MenuPopup::new(menu)
                 .on_dismiss(Cursive::select_menubar)
                 .on_action(|s| s.menubar().state = State::Inactive),

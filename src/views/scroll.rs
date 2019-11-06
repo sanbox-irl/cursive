@@ -4,22 +4,22 @@ use crate::view::{scroll, ScrollStrategy, Selector, View};
 use crate::{Printer, Rect, Vec2, With};
 
 /// Wraps a view in a scrollable area.
-pub struct ScrollView<V> {
+pub struct Scroll<V> {
     /// The wrapped view.
     inner: V,
 
     core: scroll::Core,
 }
 
-impl_scroller!(ScrollView<V>::core);
+impl_scroller!(Scroll<V>::core);
 
-impl<V> ScrollView<V>
+impl<V> Scroll<V>
 where
     V: View,
 {
-    /// Creates a new ScrollView around `view`.
+    /// Creates a new Scroll around `view`.
     pub fn new(inner: V) -> Self {
-        ScrollView {
+        Scroll {
             inner,
             core: scroll::Core::new(),
         }
@@ -34,7 +34,7 @@ where
     /// phase.
     ///
     /// This is only the size the content _thinks_ it has, and may be larger
-    /// than the actual size used by this `ScrollView`.
+    /// than the actual size used by this `Scroll`.
     pub fn inner_size(&self) -> Vec2 {
         self.core.inner_size()
     }
@@ -169,7 +169,7 @@ where
     inner_getters!(self.inner: V);
 }
 
-impl<V> View for ScrollView<V>
+impl<V> View for Scroll<V>
 where
     V: View,
 {

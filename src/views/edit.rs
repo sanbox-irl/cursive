@@ -1,11 +1,9 @@
-use crate::direction::Direction;
 use crate::event::{Callback, Event, EventResult, Key, MouseEvent};
 use crate::rect::Rect;
 use crate::theme::{ColorStyle, Effect};
 use crate::utils::lines::simple::{simple_prefix, simple_suffix};
-use crate::vec::Vec2;
-use crate::view::View;
-use crate::{Cursive, Printer, With};
+use crate::{Cursive, Direction, Printer, Vec2, View, With};
+
 use std::cell::RefCell;
 use std::rc::Rc;
 use unicode_segmentation::UnicodeSegmentation;
@@ -33,7 +31,7 @@ pub type OnSubmit = dyn Fn(&mut Cursive, &str);
 /// ```rust
 /// # use cursive::Cursive;
 /// # use cursive::traits::*;
-/// # use cursive::views::{Dialog, EditView, TextView};
+/// # use cursive::views::{Dialog, Edit, Text};
 /// let mut siv = Cursive::dummy();
 ///
 /// // Create a dialog with an edit text and a button.
@@ -44,7 +42,7 @@ pub type OnSubmit = dyn Fn(&mut Cursive, &str);
 ///         .title("Enter your name")
 ///         .padding((1, 1, 1, 0))
 ///         .content(
-///             EditView::new()
+///             Edit::new()
 ///                 .on_submit(show_popup)
 ///                 .with_id("name")
 ///                 .fixed_width(20),
@@ -52,7 +50,7 @@ pub type OnSubmit = dyn Fn(&mut Cursive, &str);
 ///         .button("Ok", |s| {
 ///             let name = s.call_on_id(
 ///                 "name",
-///                 |view: &mut EditView| view.get_content(),
+///                 |view: &mut Edit| view.get_content(),
 ///             ).unwrap();
 ///             show_popup(s, &name);
 ///         }),
@@ -64,12 +62,12 @@ pub type OnSubmit = dyn Fn(&mut Cursive, &str);
 ///     } else {
 ///         let content = format!("Hello {}!", name);
 ///         s.pop_layer();
-///         s.add_layer(Dialog::around(TextView::new(content))
+///         s.add_layer(Dialog::around(Text::new(content))
 ///             .button("Quit", |s| s.quit()));
 ///     }
 /// }
 /// ```
-pub struct EditView {
+pub struct Edit {
     /// Current content.
     content: Rc<String>,
 
@@ -108,12 +106,12 @@ pub struct EditView {
     style: ColorStyle,
 }
 
-new_default!(EditView);
+new_default!(Edit);
 
-impl EditView {
+impl Edit {
     /// Creates a new, empty edit view.
     pub fn new() -> Self {
-        EditView {
+        Edit {
             content: Rc::new(String::new()),
             cursor: 0,
             offset: 0,
@@ -174,8 +172,8 @@ impl EditView {
     /// # Examples
     ///
     /// ```rust
-    /// # use cursive::views::EditView;
-    /// let edit = EditView::new().filler(" ");
+    /// # use cursive::views::Edit;
+    /// let edit = Edit::new().filler(" ");
     /// ```
     pub fn filler<S: Into<String>>(self, filler: S) -> Self {
         self.with(|s| s.set_filler(filler))
@@ -269,12 +267,12 @@ impl EditView {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::{TextContent, TextView, EditView};
+    /// use cursive::views::{TextContent, Text, Edit};
     /// // Keep the length of the text in a separate view.
     /// let mut content = TextContent::new("0");
-    /// let text_view = TextView::new_with_content(content.clone());
+    /// let text_view = Text::new_with_content(content.clone());
     ///
-    /// let on_edit = EditView::new()
+    /// let on_edit = Edit::new()
     ///             .on_edit(move |_s, text, _cursor| {
     ///                 content.set_content(format!("{}", text.len()));
     ///             });
@@ -343,9 +341,9 @@ impl EditView {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::{Dialog, EditView};
+    /// use cursive::views::{Dialog, Edit};
     ///
-    /// let edit_view = EditView::new()
+    /// let edit_view = Edit::new()
     ///     .on_submit(|s, text| {
     ///         s.add_layer(Dialog::info(text));
     ///     });
@@ -522,7 +520,7 @@ fn make_small_stars(length: usize) -> &'static str {
     &"****"[..length]
 }
 
-impl View for EditView {
+impl View for Edit {
     fn draw(&self, printer: &Printer<'_, '_>) {
         assert_eq!(
             printer.size.x, self.last_length,

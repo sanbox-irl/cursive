@@ -1,13 +1,13 @@
 use crate::view::View;
-use crate::views::ScrollView;
+use crate::views::Scroll;
 
-/// Makes a view wrappable in a [`ScrollView`].
+/// Makes a view wrappable in a [`Scroll`].
 ///
-/// [`ScrollView`]: crate::views::ScrollView
+/// [`Scroll`]: crate::views::Scroll
 pub trait Scrollable: View + Sized {
-    /// Wraps `self` in a `ScrollView`.
-    fn scrollable(self) -> ScrollView<Self> {
-        ScrollView::new(self)
+    /// Wraps `self` in a `Scroll`.
+    fn scrollable(self) -> Scroll<Self> {
+        Scroll::new(self)
     }
 }
 

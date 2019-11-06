@@ -5,7 +5,7 @@ use crate::rect::Rect;
 use crate::theme::ColorStyle;
 use crate::vec::Vec2;
 use crate::view::{Margins, Selector, View};
-use crate::views::{Button, DummyView, SizedView, TextView, ViewBox};
+use crate::views::{Boxed, Button, Dummy, LastSize, Text};
 use crate::Cursive;
 use crate::Printer;
 use crate::With;
@@ -25,7 +25,7 @@ pub enum DialogFocus {
 }
 
 struct ChildButton {
-    button: SizedView<Button>,
+    button: LastSize<Button>,
     offset: Cell<Vec2>,
 }
 
@@ -35,7 +35,7 @@ impl ChildButton {
         F: 'static + Fn(&mut Cursive),
     {
         ChildButton {
-            button: SizedView::new(Button::new(label, cb)),
+            button: LastSize::new(Button::new(label, cb)),
             offset: Cell::new(Vec2::zero()),
         }
     }
@@ -46,8 +46,8 @@ impl ChildButton {
 /// # Examples
 ///
 /// ```
-/// # use cursive::views::{Dialog,TextView};
-/// let dialog = Dialog::around(TextView::new("Hello!"))
+/// # use cursive::views::{Dialog,Text};
+/// let dialog = Dialog::around(Text::new("Hello!"))
 ///                     .button("Ok", |s| s.quit());
 /// ```
 pub struct Dialog {
@@ -58,7 +58,7 @@ pub struct Dialog {
     title_position: HAlign,
 
     // The actual inner view.
-    content: SizedView<ViewBox>,
+    content: LastSize<Boxed>,
 
     // Optional list of buttons under the main view.
     // Include the top-left corner.
@@ -87,13 +87,13 @@ impl Dialog {
     ///
     /// You should probably call `content()` next.
     pub fn new() -> Self {
-        Self::around(DummyView)
+        Self::around(Dummy)
     }
 
     /// Creates a new `Dialog` with the given content.
     pub fn around<V: View + 'static>(view: V) -> Self {
         Dialog {
-            content: SizedView::new(ViewBox::boxed(view)),
+            content: LastSize::new(Boxed::boxed(view)),
             buttons: Vec::new(),
             title: String::new(),
             title_position: HAlign::Center,
@@ -112,10 +112,10 @@ impl Dialog {
     /// # Examples
     ///
     /// ```
-    /// use cursive::views::{Dialog, TextView};
+    /// use cursive::views::{Dialog, Text};
     ///
     /// let dialog = Dialog::new()
-    ///         .content(TextView::new("Hello!"))
+    ///         .content(Text::new("Hello!"))
     ///         .button("Quit", |s| s.quit());
     /// ```
     pub fn content<V: View + 'static>(self, view: V) -> Self {
@@ -125,12 +125,12 @@ impl Dialog {
     /// Gets the content of this dialog.
     ///
     /// ```
-    /// use cursive::views::{Dialog, TextView};
-    /// let dialog = Dialog::around(TextView::new("Hello!"));
-    /// let text_view: &TextView = dialog
+    /// use cursive::views::{Dialog, Text};
+    /// let dialog = Dialog::around(Text::new("Hello!"));
+    /// let text_view: &Text = dialog
     ///     .get_content()
     ///     .as_any()
-    ///     .downcast_ref::<TextView>()
+    ///     .downcast_ref::<Text>()
     ///     .unwrap();
     /// assert_eq!(text_view.get_content().source(), "Hello!");
     /// ```
@@ -148,7 +148,7 @@ impl Dialog {
     ///
     /// Previous content will be dropped.
     pub fn set_content<V: View + 'static>(&mut self, view: V) {
-        self.content = SizedView::new(ViewBox::boxed(view));
+        self.content = LastSize::new(Boxed::boxed(view));
         self.invalidate();
     }
 
@@ -163,7 +163,7 @@ impl Dialog {
     ///             .button("Quit", |s| s.quit());
     /// ```
     pub fn text<S: Into<String>>(text: S) -> Self {
-        Self::around(TextView::new(text))
+        Self::around(Text::new(text))
     }
 
     /// Convenient method to create an infobox.

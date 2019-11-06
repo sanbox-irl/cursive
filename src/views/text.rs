@@ -15,18 +15,18 @@ use crate::{Printer, Vec2, With, XY};
 // Content type used internally for caching and storage
 type InnerContentType = Arc<StyledString>;
 
-/// Provides access to the content of a [`TextView`].
+/// Provides access to the content of a [`Text`].
 ///
 /// Cloning this object will still point to the same content.
 ///
-/// [`TextView`]: struct.TextView.html
+/// [`Text`]: struct.Text.html
 ///
 /// # Examples
 ///
 /// ```rust
-/// # use cursive::views::{TextView, TextContent};
+/// # use cursive::views::{Text, TextContent};
 /// let mut content = TextContent::new("content");
-/// let view = TextView::new_with_content(content.clone());
+/// let view = Text::new_with_content(content.clone());
 ///
 /// // Later, possibly in a different thread
 /// content.set_content("new content");
@@ -93,7 +93,7 @@ impl TextContent {
         });
     }
 
-    /// Append `content` to the end of a `TextView`.
+    /// Append `content` to the end of a `Text`.
     pub fn append<S>(&self, content: S)
     where
         S: Into<StyledString>,
@@ -128,7 +128,7 @@ impl TextContent {
     }
 }
 
-/// Internel representation of the content for a `TextView`.
+/// Internel representation of the content for a `Text`.
 ///
 /// This is mostly just a `StyledString`.
 ///
@@ -175,12 +175,12 @@ impl TextContentInner {
 ///
 /// ```rust
 /// # use cursive::Cursive;
-/// # use cursive::views::TextView;
+/// # use cursive::views::Text;
 /// let mut siv = Cursive::dummy();
 ///
-/// siv.add_layer(TextView::new("Hello world!"));
+/// siv.add_layer(Text::new("Hello world!"));
 /// ```
-pub struct TextView {
+pub struct Text {
     // content: String,
     content: TextContent,
     rows: Vec<Row>,
@@ -196,8 +196,8 @@ pub struct TextView {
     width: Option<usize>,
 }
 
-impl TextView {
-    /// Creates a new TextView with the given content.
+impl Text {
+    /// Creates a new Text with the given content.
     pub fn new<S>(content: S) -> Self
     where
         S: Into<StyledString>,
@@ -205,7 +205,7 @@ impl TextView {
         Self::new_with_content(TextContent::new(content))
     }
 
-    /// Creates a new TextView using the given `Arc<Mutex<String>>`.
+    /// Creates a new Text using the given `Arc<Mutex<String>>`.
     ///
     /// If you kept a clone of the given content, you'll be able to update it
     /// remotely.
@@ -213,16 +213,16 @@ impl TextView {
     /// # Examples
     ///
     /// ```rust
-    /// # use cursive::views::{TextView, TextContent};
+    /// # use cursive::views::{Text, TextContent};
     /// let mut content = TextContent::new("content");
-    /// let view = TextView::new_with_content(content.clone());
+    /// let view = Text::new_with_content(content.clone());
     ///
     /// // Later, possibly in a different thread
     /// content.set_content("new content");
     /// assert!(view.get_content().source().contains("new"));
     /// ```
     pub fn new_with_content(content: TextContent) -> Self {
-        TextView {
+        Text {
             content,
             effect: Effect::Simple,
             rows: Vec::new(),
@@ -233,9 +233,9 @@ impl TextView {
         }
     }
 
-    /// Creates a new empty `TextView`.
+    /// Creates a new empty `Text`.
     pub fn empty() -> Self {
-        TextView::new("")
+        Text::new("")
     }
 
     /// Sets the effect for the entire content.
@@ -309,7 +309,7 @@ impl TextView {
         self.content.set_content(content);
     }
 
-    /// Append `content` to the end of a `TextView`.
+    /// Append `content` to the end of a `Text`.
     pub fn append<S>(&mut self, content: S)
     where
         S: Into<StyledString>,
@@ -359,7 +359,7 @@ impl TextView {
     }
 }
 
-impl View for TextView {
+impl View for Text {
     fn draw(&self, printer: &Printer<'_, '_>) {
         let h = self.rows.len();
         // If the content is smaller than the view, align it somewhere.

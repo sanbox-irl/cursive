@@ -14,9 +14,9 @@ use std::rc::Rc;
 /// # Examples
 ///
 /// ```
-/// use cursive::views::{Dialog, SliderView};
+/// use cursive::views::{Dialog, Slider};
 ///
-/// let slider_view = SliderView::horizontal(10)
+/// let slider_view = Slider::horizontal(10)
 ///     .on_change(|s, n| if n == 5 {
 ///         s.add_layer(Dialog::info("5! Pick 5!"));
 ///     })
@@ -25,7 +25,7 @@ use std::rc::Rc;
 ///         n => s.add_layer(Dialog::info(format!("Why {}? Why not 5?", n))),
 ///     });
 /// ```
-pub struct SliderView {
+pub struct Slider {
     orientation: Orientation,
     on_change: Option<Rc<dyn Fn(&mut Cursive, usize)>>,
     on_enter: Option<Rc<dyn Fn(&mut Cursive, usize)>>,
@@ -34,15 +34,15 @@ pub struct SliderView {
     dragging: bool,
 }
 
-impl SliderView {
-    /// Creates a new `SliderView` in the given orientation.
+impl Slider {
+    /// Creates a new `Slider` in the given orientation.
     ///
     /// The view will have a fixed length of `max_value`,
     /// with one tick per block.
     ///
     /// The actual range of values for this slider is `[0, max_value - 1]`.
     pub fn new(orientation: Orientation, max_value: usize) -> Self {
-        SliderView {
+        Slider {
             orientation,
             value: 0,
             max_value,
@@ -52,12 +52,12 @@ impl SliderView {
         }
     }
 
-    /// Creates a new vertical `SliderView`.
+    /// Creates a new vertical `Slider`.
     pub fn vertical(max_value: usize) -> Self {
         Self::new(Orientation::Vertical, max_value)
     }
 
-    /// Creates a new horizontal `SliderView`.
+    /// Creates a new horizontal `Slider`.
     pub fn horizontal(max_value: usize) -> Self {
         Self::new(Orientation::Horizontal, max_value)
     }
@@ -140,7 +140,7 @@ impl SliderView {
     }
 }
 
-impl View for SliderView {
+impl View for Slider {
     fn draw(&self, printer: &Printer<'_, '_>) {
         match self.orientation {
             Orientation::Vertical => {

@@ -5,7 +5,7 @@ use crate::vec::Vec2;
 use crate::view::{
     IntoBoxedView, Offset, Position, Selector, View, ViewWrapper,
 };
-use crate::views::{CircularFocus, Layer, ShadowView, ViewBox};
+use crate::views::{Boxed, CircularFocus, Layer, Shadow};
 use crate::Printer;
 use crate::With;
 use std::cell;
@@ -13,7 +13,7 @@ use std::ops::Deref;
 
 /// Simple stack of views.
 /// Only the top-most view is active and can receive input.
-pub struct StackView {
+pub struct Stack {
     // Store layers from back to front.
     layers: Vec<Child>,
     last_size: Vec2,
@@ -31,7 +31,7 @@ enum Placement {
     Fullscreen,
 }
 
-/// Identifies a layer in a `StackView`.
+/// Identifies a layer in a `Stack`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LayerPosition {
     /// Starts from the back (bottom) of the stack.
@@ -64,7 +64,7 @@ impl Placement {
 /// A child view can be wrapped in multiple ways.
 enum ChildWrapper<T: View> {
     // Some views include a shadow around.
-    Shadow(ShadowView<Layer<CircularFocus<T>>>),
+    Shadow(Shadow<Layer<CircularFocus<T>>>),
 
     // Some include only include a background.
     Backfilled(Layer<CircularFocus<T>>),
@@ -77,7 +77,7 @@ impl<T: View> ChildWrapper<T> {
     fn unwrap(self) -> T {
         match self {
             // All these into_inner() can never fail.
-            // (ShadowView, Layer, CircularFocus)
+            // (Shadow, Layer, CircularFocus)
             ChildWrapper::Shadow(shadow) => shadow
                 .into_inner()
                 .ok()
@@ -199,7 +199,7 @@ impl<T: View> View for ChildWrapper<T> {
 }
 
 struct Child {
-    view: ChildWrapper<ViewBox>,
+    view: ChildWrapper<Boxed>,
     size: Vec2,
     placement: Placement,
 
@@ -210,24 +210,24 @@ struct Child {
     virgin: bool,
 }
 
-new_default!(StackView);
+new_default!(Stack);
 
-impl StackView {
-    /// Creates a new empty StackView
+impl Stack {
+    /// Creates a new empty Stack
     pub fn new() -> Self {
-        StackView {
+        Stack {
             layers: Vec::new(),
             last_size: Vec2::zero(),
             bg_dirty: cell::Cell::new(true),
         }
     }
 
-    /// Returns the number of layers in this `StackView`.
+    /// Returns the number of layers in this `Stack`.
     pub fn len(&self) -> usize {
         self.layers.len()
     }
 
-    /// Returns `true` if there is no layer in this `StackView`.
+    /// Returns `true` if there is no layer in this `Stack`.
     pub fn is_empty(&self) -> bool {
         self.layers.is_empty()
     }
@@ -250,7 +250,7 @@ impl StackView {
     where
         T: IntoBoxedView,
     {
-        let boxed = ViewBox::boxed(view);
+        let boxed = Boxed::boxed(view);
         self.layers.push(Child {
             view: ChildWrapper::Backfilled(Layer::new(
                 CircularFocus::wrap_tab(boxed),
@@ -308,12 +308,12 @@ impl StackView {
     /// # Examples
     ///
     /// ```rust
-    /// # use cursive::views::{TextView, StackView, Dialog, LayerPosition};
+    /// # use cursive::views::{Text, Stack, Dialog, LayerPosition};
     /// # use cursive::view::Identifiable;
-    /// let mut stack = StackView::new();
-    /// stack.add_layer(TextView::new("Back"));
-    /// stack.add_layer(Dialog::around(TextView::new("Middle").with_id("text")));
-    /// stack.add_layer(TextView::new("Front"));
+    /// let mut stack = Stack::new();
+    /// stack.add_layer(Text::new("Back"));
+    /// stack.add_layer(Dialog::around(Text::new("Middle").with_id("text")));
+    /// stack.add_layer(Text::new("Front"));
     ///
     /// assert_eq!(stack.find_layer_from_id("text"), Some(LayerPosition::FromBack(1)));
     /// ```
@@ -356,11 +356,11 @@ impl StackView {
     where
         T: IntoBoxedView,
     {
-        let boxed = ViewBox::boxed(view);
+        let boxed = Boxed::boxed(view);
         self.layers.push(Child {
             // Skip padding for absolute/parent-placed views
             view: ChildWrapper::Shadow(
-                ShadowView::new(Layer::new(CircularFocus::wrap_tab(boxed)))
+                Shadow::new(Layer::new(CircularFocus::wrap_tab(boxed)))
                     .top_padding(position.y == Offset::Center)
                     .left_padding(position.x == Offset::Center),
             ),
@@ -383,7 +383,7 @@ impl StackView {
     where
         T: IntoBoxedView,
     {
-        let boxed = ViewBox::boxed(view);
+        let boxed = Boxed::boxed(view);
         self.layers.push(Child {
             view: ChildWrapper::Plain(CircularFocus::wrap_tab(boxed)),
             size: Vec2::new(0, 0),
@@ -402,7 +402,7 @@ impl StackView {
         self.with(|s| s.add_layer_at(position, view))
     }
 
-    /// Remove a layer from this `StackView`.
+    /// Remove a layer from this `Stack`.
     ///
     /// # Panics
     ///
@@ -419,7 +419,7 @@ impl StackView {
             .pop()
             .map(|child| child.view)
             .map(ChildWrapper::unwrap)
-            .map(ViewBox::unwrap)
+            .map(Boxed::unwrap)
     }
 
     /// Computes the offset of the current top view.
@@ -596,7 +596,7 @@ where
     }
 }
 
-impl View for StackView {
+impl View for Stack {
     fn draw(&self, printer: &Printer<'_, '_>) {
         // This function is included for compat with the view trait,
         // it should behave the same as calling them seperately, but does
@@ -685,12 +685,12 @@ impl View for StackView {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::views::TextView;
+    use crate::views::Text;
 
     #[test]
     fn pop_add() {
         // Start with a simple stack
-        let mut stack = StackView::new().layer(TextView::new("1"));
+        let mut stack = Stack::new().layer(Text::new("1"));
 
         // And keep poping and re-pushing the view
         for _ in 0..20 {
@@ -700,18 +700,18 @@ mod tests {
 
         // We want to make sure we don't add any layer of Box'ing
         let layer = stack.pop_layer().unwrap();
-        let text: Box<TextView> = layer.as_boxed_any().downcast().unwrap();
+        let text: Box<Text> = layer.as_boxed_any().downcast().unwrap();
 
         assert_eq!(text.get_content().source(), "1");
     }
 
     #[test]
     fn move_layer_works() {
-        let mut stack = StackView::new()
-            .layer(TextView::new("1"))
-            .layer(TextView::new("2"))
-            .layer(TextView::new("3"))
-            .layer(TextView::new("4"));
+        let mut stack = Stack::new()
+            .layer(Text::new("1"))
+            .layer(Text::new("2"))
+            .layer(Text::new("3"))
+            .layer(Text::new("4"));
 
         // Try moving views around, make sure we have the expected result
 
@@ -734,19 +734,19 @@ mod tests {
         // 1,2,4,3
 
         let layer = stack.pop_layer().unwrap();
-        let text: Box<TextView> = layer.as_boxed_any().downcast().unwrap();
+        let text: Box<Text> = layer.as_boxed_any().downcast().unwrap();
         assert_eq!(text.get_content().source(), "3");
 
         let layer = stack.pop_layer().unwrap();
-        let text: Box<TextView> = layer.as_boxed_any().downcast().unwrap();
+        let text: Box<Text> = layer.as_boxed_any().downcast().unwrap();
         assert_eq!(text.get_content().source(), "4");
 
         let layer = stack.pop_layer().unwrap();
-        let text: Box<TextView> = layer.as_boxed_any().downcast().unwrap();
+        let text: Box<Text> = layer.as_boxed_any().downcast().unwrap();
         assert_eq!(text.get_content().source(), "2");
 
         let layer = stack.pop_layer().unwrap();
-        let text: Box<TextView> = layer.as_boxed_any().downcast().unwrap();
+        let text: Box<Text> = layer.as_boxed_any().downcast().unwrap();
         assert_eq!(text.get_content().source(), "1");
 
         assert!(stack.pop_layer().is_none());
@@ -754,29 +754,28 @@ mod tests {
 
     #[test]
     fn get() {
-        let mut stack = StackView::new()
-            .layer(TextView::new("1"))
-            .layer(TextView::new("2"));
+        let mut stack =
+            Stack::new().layer(Text::new("1")).layer(Text::new("2"));
 
         assert!(stack
             .get(LayerPosition::FromFront(0))
             .unwrap()
             .as_any()
-            .is::<TextView>());
+            .is::<Text>());
         assert!(stack
             .get(LayerPosition::FromBack(0))
             .unwrap()
             .as_any()
-            .is::<TextView>());
+            .is::<Text>());
         assert!(stack
             .get_mut(LayerPosition::FromFront(0))
             .unwrap()
             .as_any_mut()
-            .is::<TextView>());
+            .is::<Text>());
         assert!(stack
             .get_mut(LayerPosition::FromBack(0))
             .unwrap()
             .as_any_mut()
-            .is::<TextView>());
+            .is::<Text>());
     }
 }

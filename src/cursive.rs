@@ -32,7 +32,7 @@ type HashMap<K, V> = std::collections::HashMap<K, V, ahash::ABuildHasher>;
 /// It uses a list of screen, with one screen active at a time.
 pub struct Cursive {
     theme: theme::Theme,
-    screens: Vec<views::StackView>,
+    screens: Vec<views::Stack>,
     global_callbacks: HashMap<Event, Vec<Callback>>,
     menubar: views::Menubar,
 
@@ -153,7 +153,7 @@ impl Cursive {
 
         backend_init().map(|backend| Cursive {
             theme,
-            screens: vec![views::StackView::new()],
+            screens: vec![views::Stack::new()],
             last_sizes: Vec::new(),
             global_callbacks: HashMap::default(),
             menubar: views::Menubar::new(),
@@ -286,9 +286,9 @@ impl Cursive {
     pub fn show_debug_console(&mut self) {
         self.add_layer(
             views::Dialog::around(
-                views::ScrollView::new(views::IdView::new(
+                views::Scroll::new(views::Named::new(
                     DEBUG_VIEW_ID,
-                    views::DebugView::new(),
+                    views::DebugConsole::new(),
                 ))
                 .scroll_x(true),
             )
@@ -466,13 +466,13 @@ impl Cursive {
     }
 
     /// Returns a reference to the currently active screen.
-    pub fn screen(&self) -> &views::StackView {
+    pub fn screen(&self) -> &views::Stack {
         let id = self.active_screen;
         &self.screens[id]
     }
 
     /// Returns a mutable reference to the currently active screen.
-    pub fn screen_mut(&mut self) -> &mut views::StackView {
+    pub fn screen_mut(&mut self) -> &mut views::Stack {
         let id = self.active_screen;
         &mut self.screens[id]
     }
@@ -485,7 +485,7 @@ impl Cursive {
     /// Adds a new screen, and returns its ID.
     pub fn add_screen(&mut self) -> ScreenId {
         let res = self.screens.len();
-        self.screens.push(views::StackView::new());
+        self.screens.push(views::Stack::new());
         res
     }
 
@@ -575,9 +575,9 @@ impl Cursive {
         self.call_on(&view::Selector::Id(id), callback)
     }
 
-    /// Convenient method to find a view wrapped in [`IdView`].
+    /// Convenient method to find a view wrapped in [`Named`].
     ///
-    /// This looks for a `IdView<V>` with the given ID, and return
+    /// This looks for a `Named<V>` with the given ID, and return
     /// a [`ViewRef`] to the wrapped view. The `ViewRef` implements
     /// `DerefMut<Target=T>`, so you can treat it just like a `&mut T`.
     ///
@@ -618,13 +618,13 @@ impl Cursive {
     /// assert!(siv.find_id::<SelectView<u32>>("select").is_some());
     /// ```
     ///
-    /// [`IdView`]: views/struct.IdView.html
+    /// [`Named`]: views/struct.Named.html
     /// [`ViewRef`]: views/type.ViewRef.html
     pub fn find_id<V>(&mut self, id: &str) -> Option<views::ViewRef<V>>
     where
         V: View + Any,
     {
-        self.call_on_id(id, views::IdView::<V>::get_mut)
+        self.call_on_id(id, views::Named::<V>::get_mut)
     }
 
     /// Moves the focus to the view identified by `id`.

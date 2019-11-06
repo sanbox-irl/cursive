@@ -1,13 +1,13 @@
 use crate::view::View;
-use crate::views::IdView;
+use crate::views::Named;
 
-/// Makes a view wrappable in an [`IdView`].
+/// Makes a view wrappable in an [`Named`].
 ///
-/// [`IdView`]: ../views/struct.IdView.html
+/// [`Named`]: ../views/struct.Named.html
 pub trait Identifiable: View + Sized {
-    /// Wraps this view into an `IdView` with the given id.
+    /// Wraps this view into an `Named` with the given id.
     ///
-    /// This is just a shortcut for `IdView::new(id, self)`
+    /// This is just a shortcut for `Named::new(id, self)`
     ///
     /// You can use the given id to find the view in the layout tree.
     ///
@@ -41,8 +41,8 @@ pub trait Identifiable: View + Sized {
     /// [`fixed_width`]: trait.Boxable.html#method.fixed_width
     /// [`BoxView`]: ../views/struct.BoxView.html
     ///
-    fn with_id<S: Into<String>>(self, id: S) -> IdView<Self> {
-        IdView::new(id, self)
+    fn with_id<S: Into<String>>(self, id: S) -> Named<Self> {
+        Named::new(id, self)
     }
 }
 

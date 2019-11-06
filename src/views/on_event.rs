@@ -24,21 +24,21 @@ use std::rc::Rc;
 /// "Simple" callbacks ([`on_event`] and [`on_pre_event`]) skip this first
 /// phase and are only called with a `&mut Cursive`.
 ///
-/// [`on_event`]: struct.OnEventView.html#method.on_event
-/// [`on_pre_event`]: struct.OnEventView.html#method.on_pre_event
-/// [`on_event_inner`]: struct.OnEventView.html#method.on_event_inner
-/// [`on_pre_event_inner`]: struct.OnEventView.html#method.on_pre_event_inner
+/// [`on_event`]: struct.OnEvent.html#method.on_event
+/// [`on_pre_event`]: struct.OnEvent.html#method.on_pre_event
+/// [`on_event_inner`]: struct.OnEvent.html#method.on_event_inner
+/// [`on_pre_event_inner`]: struct.OnEvent.html#method.on_pre_event_inner
 ///
 /// # Examples
 ///
 /// ```
 /// # use cursive::event;;
-/// # use cursive::views::{OnEventView, TextView};
-/// let view = OnEventView::new(TextView::new("This view has an event!"))
+/// # use cursive::views::{OnEvent, Text};
+/// let view = OnEvent::new(Text::new("This view has an event!"))
 ///                         .on_event('q', |s| s.quit())
 ///                         .on_event(event::Key::Esc, |s| s.quit());
 /// ```
-pub struct OnEventView<T: View> {
+pub struct OnEvent<T: View> {
     view: T,
     callbacks: Vec<(EventTrigger, Action<T>)>,
 }
@@ -65,10 +65,10 @@ enum TriggerPhase {
     AfterChild,
 }
 
-impl<T: View> OnEventView<T> {
-    /// Wraps the given view in a new OnEventView.
+impl<T: View> OnEvent<T> {
+    /// Wraps the given view in a new OnEvent.
     pub fn new(view: T) -> Self {
-        OnEventView {
+        OnEvent {
             view,
             callbacks: Vec::new(),
         }
@@ -82,15 +82,15 @@ impl<T: View> OnEventView<T> {
     ///
     ///
     /// ```rust
-    /// # use cursive::views::{OnEventView, DummyView};
+    /// # use cursive::views::{OnEvent, Dummy};
     /// # use cursive::event::{Key, EventTrigger};
-    /// let view = OnEventView::new(DummyView)
+    /// let view = OnEvent::new(Dummy)
     ///     .on_event('q', |s| s.quit())
     ///     .on_event(Key::Esc, |s| {
     ///         s.pop_layer();
     ///     })
     ///     .on_event(EventTrigger::mouse(), |s| {
-    ///         s.add_layer(DummyView);
+    ///         s.add_layer(Dummy);
     ///     });
     /// ```
     pub fn on_event<F, E>(self, trigger: E, cb: F) -> Self
@@ -143,17 +143,17 @@ impl<T: View> OnEventView<T> {
     ///
     /// Chainable variant.
     ///
-    /// [`on_event`]: OnEventView::on_event()
+    /// [`on_event`]: OnEvent::on_event()
     ///
     /// # Examples
     ///
     /// ```rust
-    /// # use cursive::views::{DummyView, OnEventView};
+    /// # use cursive::views::{Dummy, OnEvent};
     /// # use cursive::event::{Event, EventTrigger, MouseEvent, EventResult};
-    /// let view = OnEventView::new(DummyView)
+    /// let view = OnEvent::new(Dummy)
     ///     .on_event_inner(
     ///         EventTrigger::mouse(),
-    ///         |d: &mut DummyView, e: &Event| {
+    ///         |d: &mut Dummy, e: &Event| {
     ///             if let &Event::Mouse { event: MouseEvent::Press(_), .. } = e {
     ///                 // Do something on mouse press
     ///                 Some(EventResult::with_cb(|s| {
@@ -254,7 +254,7 @@ impl<T: View> OnEventView<T> {
     inner_getters!(self.view: T);
 }
 
-impl<T: View> ViewWrapper for OnEventView<T> {
+impl<T: View> ViewWrapper for OnEvent<T> {
     wrap_impl!(self.view: T);
 
     fn wrap_on_event(&mut self, event: Event) -> EventResult {
