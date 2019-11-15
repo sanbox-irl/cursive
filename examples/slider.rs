@@ -1,5 +1,5 @@
 use cursive::traits::*;
-use cursive::views::{Dialog, SliderView};
+use cursive::views::{Dialog, Slider};
 use cursive::Cursive;
 
 fn main() {
@@ -13,7 +13,7 @@ fn main() {
     siv.add_layer(
         Dialog::around(
             // We give the number of steps in the constructor
-            SliderView::horizontal(15)
+            Slider::horizontal(15)
                 // Sets the initial value
                 .value(7)
                 .on_change(|s, v| {

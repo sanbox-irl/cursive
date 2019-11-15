@@ -5,7 +5,7 @@ use crate::views::Resized;
 /// Makes a view wrappable in a [`Resized`].
 ///
 /// [`Resized`]: ../views/struct.Resized.html
-pub trait Boxable: View + Sized {
+pub trait Resizable: View + Sized {
     /// Wraps `self` in a `Resized` with the given size constraints.
     fn boxed(
         self,
@@ -76,4 +76,4 @@ pub trait Boxable: View + Sized {
     }
 }
 
-impl<T: View> Boxable for T {}
+impl<T: View> Resizable for T {}

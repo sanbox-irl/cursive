@@ -1,5 +1,5 @@
 use cursive::theme::{Color, PaletteColor, Theme};
-use cursive::views::TextView;
+use cursive::views::Text;
 use cursive::Cursive;
 
 // This example sets the background color to the terminal default.
@@ -15,7 +15,7 @@ fn main() {
     // We can quit by pressing `q`
     siv.add_global_callback('q', Cursive::quit);
 
-    siv.add_layer(TextView::new(
+    siv.add_layer(Text::new(
         "Hello World with default terminal background color!\n\
          Press q to quit the application.",
     ));

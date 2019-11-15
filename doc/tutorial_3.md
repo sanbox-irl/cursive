@@ -102,9 +102,9 @@ We could do:
 let select = BoxView::with_fixed_size((10, 5), SelectView::<String>::new());
 ```
 
-But there is another shorter way: the [`Boxable`] trait is conveniently
+But there is another shorter way: the [`Resizable`] trait is conveniently
 implemented for any `View`, and allow to wrap in a `BoxView` with a chainable
-call. `Boxable`, and a few other useful traits, are conveniently bundled in
+call. `Resizable`, and a few other useful traits, are conveniently bundled in
 the [`traits`] prelude, ready to be imported:
 
 ```rust,ignore
@@ -140,7 +140,7 @@ replace the layer with a simple dialog.
 
 [`SelectView`]: https://docs.rs/cursive/0/cursive/views/struct.SelectView.html
 [`BoxView`]: https://docs.rs/cursive/0/cursive/views/struct.BoxView.html
-[`Boxable`]: https://docs.rs/cursive/0/cursive/view/trait.Boxable.html
+[`Resizable`]: https://docs.rs/cursive/0/cursive/view/trait.Resizable.html
 [`traits`]: https://docs.rs/cursive/0/cursive/traits/index.html
 [`SelectView::on_submit`]: https://docs.rs/cursive/0/cursive/views/struct.SelectView.html#method.on_submit
 

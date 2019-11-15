@@ -15,11 +15,11 @@ use std::ops::Deref;
 /// # Examples
 ///
 /// ```
-/// use cursive::views::{Button, LinearLayout, TextView, TextArea};
-/// use cursive::traits::Boxable;
+/// use cursive::views::{Button, LinearLayout, Text, TextArea};
+/// use cursive::traits::Resizable;
 ///
 /// let linear_layout = LinearLayout::horizontal()
-///     .child(TextView::new("Top of the page"))
+///     .child(Text::new("Top of the page"))
 ///     .child(TextArea::new().fixed_size((20, 5)))
 ///     .child(Button::new("Ok", |s| s.quit()));
 /// ```

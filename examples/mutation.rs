@@ -1,6 +1,6 @@
 use cursive::traits::*;
 use cursive::view::{Offset, Position};
-use cursive::views::{Dialog, OnEventView, TextView};
+use cursive::views::{Dialog, OnEvent, Text};
 use cursive::Cursive;
 
 // This example modifies a view after creation.
@@ -17,7 +17,7 @@ fn main() {
     // We add the P callback on the textview only (and not globally),
     // so that we can't call it when the popup is already visible.
     siv.add_layer(
-        OnEventView::new(TextView::new(content).with_id("text"))
+        OnEvent::new(Text::new(content).with_id("text"))
             .on_event('p', |s| show_popup(s)),
     );
 
@@ -29,11 +29,11 @@ fn show_popup(siv: &mut Cursive) {
     // so the user can see both the popup and the view underneath.
     siv.screen_mut().add_layer_at(
         Position::new(Offset::Center, Offset::Parent(5)),
-        Dialog::around(TextView::new("Tak!"))
+        Dialog::around(Text::new("Tak!"))
             .button("Change", |s| {
                 // Look for a view tagged "text".
                 // We _know_ it's there, so unwrap it.
-                s.call_on_id("text", |view: &mut TextView| {
+                s.call_on_id("text", |view: &mut Text| {
                     let content = reverse(view.get_content().source());
                     view.set_content(content);
                 });

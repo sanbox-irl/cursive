@@ -1,4 +1,4 @@
-use cursive::views::{CircularFocus, Dialog, TextView};
+use cursive::views::{CircularFocus, Dialog, Text};
 use cursive::Cursive;
 
 fn main() {
@@ -9,7 +9,7 @@ fn main() {
     siv.add_layer(
         // Most views can be configured in a chainable way
         CircularFocus::wrap_tab(
-            Dialog::around(TextView::new("Hello Dialog!"))
+            Dialog::around(Text::new("Hello Dialog!"))
                 .title("Cursive")
                 .button("Foo", |_s| ())
                 .button("Quit", |s| s.quit()),

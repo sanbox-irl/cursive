@@ -36,6 +36,7 @@ lazy_static = "1"
 chrono = "0.4.7"
 cfg-if = "0.1.9"
 ahash = "0.2.12"
+stack_list = "0.1.0"
 
 [dependencies.toml]
 optional = true

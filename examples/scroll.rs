@@ -1,5 +1,4 @@
-use cursive::traits::Boxable;
-use cursive::view::Scrollable;
+use cursive::traits::{Resizable, Scrollable};
 use cursive::views::{Button, Canvas, Dialog, LinearLayout};
 use cursive::Printer;
 

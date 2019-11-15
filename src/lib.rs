@@ -34,11 +34,11 @@
 //!
 //! ```rust
 //! use cursive::Cursive;
-//! use cursive::views::TextView;
+//! use cursive::views::Text;
 //!
 //! let mut siv = Cursive::dummy();
 //!
-//! siv.add_layer(TextView::new("Hello World!\nPress q to quit."));
+//! siv.add_layer(Text::new("Hello World!\nPress q to quit."));
 //!
 //! siv.add_global_callback('q', |s| s.quit());
 //!
@@ -92,7 +92,6 @@ pub mod views;
 mod cursive;
 mod printer;
 mod rect;
-mod with;
 mod xy;
 
 mod div;
@@ -104,7 +103,7 @@ pub use self::cursive::{CbSink, Cursive, ScreenId};
 pub use self::direction::Direction;
 pub use self::printer::Printer;
 pub use self::rect::Rect;
+pub use self::traits::With;
 pub use self::vec::Vec2;
 pub use self::view::View;
-pub use self::with::With;
 pub use self::xy::XY;

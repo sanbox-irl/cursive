@@ -1,5 +1,5 @@
 use cursive::theme::{Color, ColorStyle};
-use cursive::view::Boxable;
+use cursive::traits::Resizable as _;
 use cursive::views::Canvas;
 use cursive::{Cursive, Printer};
 

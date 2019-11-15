@@ -76,7 +76,7 @@ impl BufferView {
     }
 }
 
-impl View for BufferView {
+impl cursive::View for BufferView {
     fn layout(&mut self, _: Vec2) {
         // Before drawing, we'll want to update the buffer
         self.update();

@@ -108,7 +108,7 @@ fn build_ui(model: Model) -> impl cursive::view::View {
     views::LinearLayout::vertical()
         .child(build_selector(Arc::clone(&model)))
         .child(build_tester(Arc::clone(&model)))
-        .child(views::DummyView.fixed_height(1))
+        .child(views::Dummy.fixed_height(1))
         .child(build_log_viewer(Arc::clone(&model)))
 }
 
@@ -151,15 +151,15 @@ fn build_selector(model: Model) -> impl cursive::view::View {
     let offset = model.lock().unwrap().offset;
     views::LinearLayout::horizontal()
         .child(
-            views::EditView::new()
+            views::Edit::new()
                 .content(format!("{}", offset))
                 .with_id("edit")
                 .min_width(5),
         )
-        .child(views::DummyView.fixed_width(1))
+        .child(views::Dummy.fixed_width(1))
         .child(views::Button::new("Update", move |s| {
             if let Some(n) = s
-                .call_on_id("edit", |edit: &mut views::EditView| {
+                .call_on_id("edit", |edit: &mut views::Edit| {
                     edit.get_content()
                 })
                 .and_then(|content| content.parse().ok())
@@ -176,8 +176,8 @@ fn build_selector(model: Model) -> impl cursive::view::View {
 /// Build a view that can run test connections.
 fn build_tester(model: Model) -> impl cursive::view::View {
     views::LinearLayout::horizontal()
-        .child(views::TextView::new("Current value:"))
-        .child(views::DummyView.fixed_width(1))
+        .child(views::Text::new("Current value:"))
+        .child(views::Dummy.fixed_width(1))
         .child(
             views::Canvas::new(model)
                 .with_draw(|model, printer| {
@@ -188,7 +188,7 @@ fn build_tester(model: Model) -> impl cursive::view::View {
                 })
                 .with_required_size(|_, _| cursive::Vec2::new(3, 1)),
         )
-        .child(views::DummyView.fixed_width(1))
+        .child(views::Dummy.fixed_width(1))
         .child(views::Button::new("Test", |s| {
             if let Err(err) = test_server() {
                 s.add_layer(

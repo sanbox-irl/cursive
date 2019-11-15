@@ -1,16 +1,16 @@
 use cursive::align::HAlign;
 use cursive::event::EventResult;
 use cursive::traits::*;
-use cursive::views::{Dialog, OnEventView, SelectView, TextView};
+use cursive::views::{Dialog, OnEvent, Select, Text};
 use cursive::Cursive;
 
-// We'll use a SelectView here.
+// We'll use a Select here.
 //
-// A SelectView is a scrollable list of items, from which the user can select
+// A Select is a scrollable list of items, from which the user can select
 // one.
 
 fn main() {
-    let mut select = SelectView::new()
+    let mut select = Select::new()
         // Center the text horizontally
         .h_align(HAlign::Center)
         // Use keyboard to jump to the pressed letters
@@ -25,7 +25,7 @@ fn main() {
     select.set_on_submit(show_next_window);
 
     // Let's override the `j` and `k` keys for navigation
-    let select = OnEventView::new(select)
+    let select = OnEvent::new(select)
         .on_pre_event_inner('k', |s, _| {
             s.select_up(1);
             Some(EventResult::Consumed(None))
@@ -53,6 +53,6 @@ fn show_next_window(siv: &mut Cursive, city: &str) {
     siv.pop_layer();
     let text = format!("{} is a great city!", city);
     siv.add_layer(
-        Dialog::around(TextView::new(text)).button("Quit", |s| s.quit()),
+        Dialog::around(Text::new(text)).button("Quit", |s| s.quit()),
     );
 }

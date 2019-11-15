@@ -1,32 +1,33 @@
 use cursive::traits::*;
-use cursive::views::{
-    Checkbox, Dialog, EditView, LinearLayout, ListView, SelectView, TextView,
-};
+use cursive::views;
 use cursive::Cursive;
 
-// This example uses a ListView.
+// This example uses a views::List.
 //
-// ListView can be used to build forms, with a list of inputs.
+// views::List can be used to build forms, with a list of inputs.
 
 fn main() {
     let mut siv = Cursive::default();
 
     siv.add_layer(
-        Dialog::new()
+        views::Dialog::new()
             .title("Please fill out this form")
             .button("Ok", |s| s.quit())
             .content(
-                ListView::new()
+                views::List::new()
                     // Each child is a single-line view with a label
-                    .child("Name", EditView::new().fixed_width(10))
+                    .child("Name", views::Edit::new().fixed_width(10))
                     .child(
                         "Receive spam?",
-                        Checkbox::new().on_change(|s, checked| {
+                        views::Checkbox::new().on_change(|s, checked| {
                             // Enable/Disable the next field depending on this checkbox
                             for name in &["email1", "email2"] {
-                                s.call_on_id(name, |view: &mut EditView| {
-                                    view.set_enabled(checked)
-                                });
+                                s.call_on_id(
+                                    name,
+                                    |view: &mut views::Edit| {
+                                        view.set_enabled(checked)
+                                    },
+                                );
                                 if checked {
                                     s.focus_id("email1").unwrap();
                                 }
@@ -37,16 +38,16 @@ fn main() {
                         "Email",
                         // Each child must have a height of 1 line,
                         // but we can still combine multiple views!
-                        LinearLayout::horizontal()
+                        views::LinearLayout::horizontal()
                             .child(
-                                EditView::new()
+                                views::Edit::new()
                                     .disabled()
                                     .with_id("email1")
                                     .fixed_width(15),
                             )
-                            .child(TextView::new("@"))
+                            .child(views::Text::new("@"))
                             .child(
-                                EditView::new()
+                                views::Edit::new()
                                     .disabled()
                                     .with_id("email2")
                                     .fixed_width(10),
@@ -56,8 +57,8 @@ fn main() {
                     .delimiter()
                     .child(
                         "Age",
-                        // Popup-mode SelectView are small enough to fit here
-                        SelectView::new()
+                        // Popup-mode views::Select are small enough to fit here
+                        views::Select::new()
                             .popup()
                             .item_str("0-18")
                             .item_str("19-30")
@@ -69,7 +70,7 @@ fn main() {
                         for i in 0..50 {
                             list.add_child(
                                 &format!("Item {}", i),
-                                EditView::new(),
+                                views::Edit::new(),
                             );
                         }
                     })

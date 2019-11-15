@@ -1,9 +1,6 @@
-use cursive::theme::BaseColor;
-use cursive::theme::Color;
-use cursive::theme::Effect;
-use cursive::theme::Style;
+use cursive::theme::{BaseColor, Color, Effect, Style};
 use cursive::utils::markup::StyledString;
-use cursive::views::{Dialog, TextView};
+use cursive::views;
 use cursive::Cursive;
 
 fn main() {
@@ -16,9 +13,9 @@ fn main() {
         Style::from(Color::Light(BaseColor::Blue)).combine(Effect::Bold),
     ));
 
-    // TextView can natively accept StyledString.
+    // views::Text can natively accept StyledString.
     siv.add_layer(
-        Dialog::around(TextView::new(styled))
+        views::Dialog::around(views::Text::new(styled))
             .button("Hell yeah!", |s| s.quit()),
     );
 

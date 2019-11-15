@@ -1,4 +1,4 @@
-use crate::view::{View, ViewPath, ViewWrapper};
+use crate::view::{Selector, View, ViewWrapper};
 use crate::views::{Named, ViewRef};
 use std::any::Any;
 
@@ -76,12 +76,4 @@ impl<T: View> Finder for T {
         }
         result
     }
-}
-
-/// Selects a single view (if any) in the tree.
-pub enum Selector<'a> {
-    /// Selects a view from its ID.
-    Id(&'a str),
-    /// Selects a view from its path.
-    Path(&'a ViewPath),
 }

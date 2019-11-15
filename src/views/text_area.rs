@@ -20,7 +20,7 @@ use unicode_width::UnicodeWidthStr;
 /// # Examples
 ///
 /// ```
-/// use cursive::traits::{Boxable, Identifiable};
+/// use cursive::traits::{Resizable, Identifiable};
 /// use cursive::views::TextArea;
 ///
 /// let text_area = TextArea::new()

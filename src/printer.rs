@@ -7,7 +7,7 @@ use crate::theme::{
 };
 use crate::utils::lines::simple::{prefix, suffix};
 use crate::vec::Vec2;
-use crate::with::With;
+use crate::With;
 use enumset::EnumSet;
 use std::cmp::min;
 use unicode_segmentation::UnicodeSegmentation;

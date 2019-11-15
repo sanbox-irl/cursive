@@ -4,7 +4,7 @@ use cursive::direction::Direction;
 use cursive::event::{Event, EventResult, MouseButton, MouseEvent};
 use cursive::theme::{BaseColor, Color, ColorStyle};
 use cursive::vec::Vec2;
-use cursive::views::{Button, Dialog, LinearLayout, Panel, SelectView};
+use cursive::views::{Button, Dialog, LinearLayout, Panel, Select};
 use cursive::Cursive;
 use cursive::Printer;
 
@@ -33,7 +33,7 @@ fn show_options(siv: &mut Cursive) {
         Dialog::new()
             .title("Select difficulty")
             .content(
-                SelectView::new()
+                Select::new()
                     .item(
                         "Easy:      8x8,   10 mines",
                         game::Options {

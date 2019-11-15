@@ -84,35 +84,28 @@ mod view_wrapper;
 
 // Essentials components
 mod any;
-mod finder;
 mod margins;
 mod position;
+mod selector;
 mod size_cache;
 mod size_constraint;
 mod view_path;
 mod view_trait;
 
-// Helper bases
-mod boxable;
-mod identifiable;
 #[macro_use]
 pub mod scroll;
 
 mod scroll_base;
-mod scrollable;
 
 mod into_boxed_view;
 
 pub use self::any::AnyView;
-pub use self::boxable::Boxable;
-pub use self::finder::{Finder, Selector};
-pub use self::identifiable::Identifiable;
 pub use self::into_boxed_view::IntoBoxedView;
 pub use self::margins::Margins;
 pub use self::position::{Offset, Position};
 pub use self::scroll::ScrollStrategy;
 pub use self::scroll_base::ScrollBase;
-pub use self::scrollable::Scrollable;
+pub use self::selector::Selector;
 pub use self::size_cache::SizeCache;
 pub use self::size_constraint::SizeConstraint;
 pub use self::view_path::ViewPath;

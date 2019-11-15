@@ -15,19 +15,19 @@ pub trait Identifiable: View + Sized {
     ///
     /// ```rust
     /// # use cursive::Cursive;
-    /// # use cursive::views::TextView;
-    /// # use cursive::view::Boxable;
-    /// use cursive::view::Identifiable;
+    /// # use cursive::views::Text;
+    /// # use cursive::traits::Resizable;
+    /// use cursive::traits::Identifiable as _;
     ///
     /// let mut siv = Cursive::dummy();
     /// siv.add_layer(
-    ///     TextView::new("foo")
+    ///     Text::new("foo")
     ///         .with_id("text")
     ///         .fixed_width(10)
     /// );
     ///
     /// // You could call this from an event callback
-    /// siv.call_on_id("text", |view: &mut TextView| {
+    /// siv.call_on_id("text", |view: &mut Text| {
     ///     view.set_content("New content!");
     /// });
     /// ```
@@ -38,7 +38,7 @@ pub trait Identifiable: View + Sized {
     /// before other wrappers like [`fixed_width`]. Otherwise, you would be
     /// retrieving a [`BoxView`]!
     ///
-    /// [`fixed_width`]: trait.Boxable.html#method.fixed_width
+    /// [`fixed_width`]: trait.Resizable.html#method.fixed_width
     /// [`BoxView`]: ../views/struct.BoxView.html
     ///
     fn with_id<S: Into<String>>(self, id: S) -> Named<Self> {

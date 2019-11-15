@@ -1,4 +1,4 @@
-use cursive::views::{Dialog, DummyView, LinearLayout, RadioGroup};
+use cursive::views::{Dialog, Dummy, LinearLayout, RadioGroup};
 use cursive::Cursive;
 
 // This example uses radio buttons.
@@ -24,8 +24,8 @@ fn main() {
                             .child(color_group.button_str("Green"))
                             .child(color_group.button_str("Blue")),
                     )
-                    // A DummyView is used as a spacer
-                    .child(DummyView)
+                    // A Dummy is used as a spacer
+                    .child(Dummy)
                     .child(
                         LinearLayout::vertical()
                             // For the size, we store a number separately

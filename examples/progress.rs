@@ -1,6 +1,6 @@
 use cursive::traits::*;
 use cursive::utils::Counter;
-use cursive::views::{Button, Dialog, LinearLayout, ProgressBar, TextView};
+use cursive::views::{Button, Dialog, LinearLayout, ProgressBar, Text};
 use cursive::Cursive;
 use rand::Rng;
 use std::cmp::min;
@@ -60,7 +60,7 @@ fn coffee_break(s: &mut Cursive) {
     s.add_layer(
         Dialog::new()
             .title("Preparation complete")
-            .content(TextView::new("Now, the real deal!").center())
+            .content(Text::new("Now, the real deal!").center())
             .button("Again??", phase_2),
     );
 }
@@ -119,7 +119,7 @@ fn final_step(s: &mut Cursive) {
         Dialog::new()
             .title("Report")
             .content(
-                TextView::new(
+                Text::new(
                     "Time travel was a success!\n\
                      We went forward a few seconds!!",
                 )

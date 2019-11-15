@@ -1,18 +1,16 @@
 use cursive::theme::{BaseColor, BorderStyle, Color, ColorStyle};
-use cursive::views::{Dialog, EditView, LinearLayout, TextView};
+use cursive::views::{Dialog, Edit, LinearLayout, Text};
 use cursive::Cursive;
 
 fn main() {
     let mut siv = Cursive::default();
 
     let layout = LinearLayout::vertical()
-        .child(TextView::new("This is a dynamic theme example!"))
-        .child(EditView::new().content("Woo! colors!").style(
-            ColorStyle::new(
-                Color::Rgb(200, 150, 150),
-                Color::Dark(BaseColor::Blue),
-            ),
-        ));
+        .child(Text::new("This is a dynamic theme example!"))
+        .child(Edit::new().content("Woo! colors!").style(ColorStyle::new(
+            Color::Rgb(200, 150, 150),
+            Color::Dark(BaseColor::Blue),
+        )));
 
     siv.add_layer(
         Dialog::around(layout)

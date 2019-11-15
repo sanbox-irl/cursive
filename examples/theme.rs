@@ -1,4 +1,4 @@
-use cursive::views::{Dialog, TextView};
+use cursive::views::{Dialog, Text};
 use cursive::Cursive;
 
 fn main() {
@@ -13,7 +13,7 @@ fn main() {
         siv.load_toml(include_str!("../assets/style.toml")).unwrap();
 
         siv.add_layer(
-            Dialog::around(TextView::new(
+            Dialog::around(Text::new(
                 "This application uses a \
                  custom theme!",
             ))
@@ -25,7 +25,7 @@ fn main() {
     #[cfg(not(feature = "toml"))]
     {
         siv.add_layer(
-            Dialog::around(TextView::new(
+            Dialog::around(Text::new(
                 "Run this example again with the `toml` feature!\n\n\
                  cargo run --example theme --features toml",
             ))

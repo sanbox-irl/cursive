@@ -1,5 +1,5 @@
 use cursive::traits::*;
-use cursive::views::{Dialog, EditView, TextView};
+use cursive::views::{Dialog, Edit, Text};
 use cursive::Cursive;
 
 fn main() {
@@ -14,21 +14,21 @@ fn main() {
             // Padding is (left, right, top, bottom)
             .padding((1, 1, 1, 0))
             .content(
-                EditView::new()
+                Edit::new()
                     // Call `show_popup` when the user presses `Enter`
                     .on_submit(show_popup)
-                    // Give the `EditView` a name so we can refer to it later.
+                    // Give the `Edit` a name so we can refer to it later.
                     .with_id("name")
                     // Wrap this in a `BoxView` with a fixed width.
                     // Do this _after_ `with_id` or the name will point to the
-                    // `BoxView` instead of `EditView`!
+                    // `BoxView` instead of `Edit`!
                     .fixed_width(20),
             )
             .button("Ok", |s| {
                 // This will run the given closure, *ONLY* if a view with the
                 // correct type and the given ID is found.
                 let name = s
-                    .call_on_id("name", |view: &mut EditView| {
+                    .call_on_id("name", |view: &mut Edit| {
                         // We can return content from the closure!
                         view.get_content()
                     })
@@ -54,8 +54,7 @@ fn show_popup(s: &mut Cursive, name: &str) {
         s.pop_layer();
         // And put a new one instead
         s.add_layer(
-            Dialog::around(TextView::new(content))
-                .button("Quit", |s| s.quit()),
+            Dialog::around(Text::new(content)).button("Quit", |s| s.quit()),
         );
     }
 }

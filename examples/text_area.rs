@@ -1,6 +1,6 @@
 use cursive::event::{Event, Key};
 use cursive::traits::*;
-use cursive::views::{Dialog, EditView, OnEventView, TextArea};
+use cursive::views;
 use cursive::Cursive;
 
 fn main() {
@@ -9,32 +9,32 @@ fn main() {
     // The main dialog will just have a textarea.
     // Its size expand automatically with the content.
     siv.add_layer(
-        Dialog::new()
+        views::Dialog::new()
             .title("Describe your issue")
             .padding((1, 1, 1, 0))
-            .content(TextArea::new().with_id("text"))
+            .content(views::TextArea::new().with_id("text"))
             .button("Ok", Cursive::quit),
     );
 
     // We'll add a find feature!
-    siv.add_layer(Dialog::info("Hint: press Ctrl-F to find in text!"));
+    siv.add_layer(views::Dialog::info("Hint: press Ctrl-F to find in text!"));
 
     siv.add_global_callback(Event::CtrlChar('f'), |s| {
         // When Ctrl-F is pressed, show the Find popup.
         // Pressing the Escape key will discard it.
         s.add_layer(
-            OnEventView::new(
-                Dialog::new()
+            views::OnEvent::new(
+                views::Dialog::new()
                     .title("Find")
                     .content(
-                        EditView::new()
+                        views::Edit::new()
                             .on_submit(find)
                             .with_id("edit")
                             .min_width(10),
                     )
                     .button("Ok", |s| {
                         let text = s
-                            .call_on_id("edit", |view: &mut EditView| {
+                            .call_on_id("edit", |view: &mut views::Edit| {
                                 view.get_content()
                             })
                             .unwrap();
@@ -55,7 +55,7 @@ fn find(siv: &mut Cursive, text: &str) {
     // First, remove the find popup
     siv.pop_layer();
 
-    let res = siv.call_on_id("text", |v: &mut TextArea| {
+    let res = siv.call_on_id("text", |v: &mut views::TextArea| {
         // Find the given text from the text area content
         // Possible improvement: search after the current cursor.
         if let Some(i) = v.get_content().find(text) {
@@ -70,6 +70,6 @@ fn find(siv: &mut Cursive, text: &str) {
 
     if let Some(Err(())) = res {
         // If we didn't find anything, tell the user!
-        siv.add_layer(Dialog::info(format!("`{}` not found", text)));
+        siv.add_layer(views::Dialog::info(format!("`{}` not found", text)));
     }
 }

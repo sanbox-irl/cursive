@@ -1,6 +1,6 @@
 use cursive::view::Position;
 use cursive::views::LayerPosition;
-use cursive::views::TextView;
+use cursive::views::Text;
 use cursive::Cursive;
 
 /// Moves top layer by the specified amount
@@ -31,7 +31,7 @@ fn main() {
     siv.add_global_callback('d', |s| move_top(s, 1, 0));
 
     // Add window to fly around.
-    siv.add_layer(TextView::new(
+    siv.add_layer(Text::new(
         "Press w,a,s,d to move the window.\n\
          Press q to quit the application.",
     ));

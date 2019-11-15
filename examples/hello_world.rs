@@ -1,4 +1,4 @@
-use cursive::views::TextView;
+use cursive::views::Text;
 use cursive::Cursive;
 
 fn main() {
@@ -8,7 +8,7 @@ fn main() {
     siv.add_global_callback('q', Cursive::quit);
 
     // Add a simple view
-    siv.add_layer(TextView::new(
+    siv.add_layer(Text::new(
         "Hello World!\n\
          Press q to quit the application.",
     ));

@@ -309,7 +309,7 @@ impl Stack {
     ///
     /// ```rust
     /// # use cursive::views::{Text, Stack, Dialog, LayerPosition};
-    /// # use cursive::view::Identifiable;
+    /// # use cursive::traits::Identifiable;
     /// let mut stack = Stack::new();
     /// stack.add_layer(Text::new("Back"));
     /// stack.add_layer(Dialog::around(Text::new("Middle").with_id("text")));

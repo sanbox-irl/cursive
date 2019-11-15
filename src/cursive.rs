@@ -9,11 +9,12 @@ use crossbeam_channel::{self, Receiver, Sender};
 use crate::backend;
 use crate::direction;
 use crate::event::{Callback, Event, EventResult};
-use crate::printer::Printer;
 use crate::theme;
-use crate::vec::Vec2;
-use crate::view::{self, Finder, IntoBoxedView, Position, View};
+use crate::traits::Finder as _;
+use crate::view::{self, IntoBoxedView, Position, View};
 use crate::views::{self, LayerPosition};
+use crate::Printer;
+use crate::Vec2;
 
 static DEBUG_VIEW_ID: &str = "_cursive_debug_view";
 
@@ -524,12 +525,12 @@ impl Cursive {
     /// # use cursive::traits::*;
     /// let mut siv = Cursive::dummy();
     ///
-    /// siv.add_layer(views::TextView::new("Text #1").with_id("text"));
+    /// siv.add_layer(views::Text::new("Text #1").with_id("text"));
     ///
     /// siv.add_global_callback('p', |s| {
     ///     s.call_on(
     ///         &view::Selector::Id("text"),
-    ///         |view: &mut views::TextView| {
+    ///         |view: &mut views::Text| {
     ///             view.set_content("Text #2");
     ///         },
     ///     );
@@ -558,11 +559,11 @@ impl Cursive {
     /// # use cursive::traits::*;
     /// let mut siv = Cursive::dummy();
     ///
-    /// siv.add_layer(views::TextView::new("Text #1")
+    /// siv.add_layer(views::Text::new("Text #1")
     ///                               .with_id("text"));
     ///
     /// siv.add_global_callback('p', |s| {
-    ///     s.call_on_id("text", |view: &mut views::TextView| {
+    ///     s.call_on_id("text", |view: &mut views::Text| {
     ///         view.set_content("Text #2");
     ///     });
     /// });
@@ -585,37 +586,37 @@ impl Cursive {
     ///
     /// ```rust
     /// # use cursive::Cursive;
-    /// # use cursive::views::{TextView, ViewRef};
+    /// # use cursive::views::{Text, ViewRef};
     /// # let mut siv = Cursive::dummy();
     /// use cursive::traits::Identifiable;
     ///
-    /// siv.add_layer(TextView::new("foo").with_id("id"));
+    /// siv.add_layer(Text::new("foo").with_id("id"));
     ///
     /// // Could be called in a callback
-    /// let mut view: ViewRef<TextView> = siv.find_id("id").unwrap();
+    /// let mut view: ViewRef<Text> = siv.find_id("id").unwrap();
     /// view.set_content("bar");
     /// ```
     ///
     /// Note that you must specify the exact type for the view you're after; for example, using the
-    /// wrong item type in a `SelectView` will not find anything:
+    /// wrong item type in a `Select` will not find anything:
     ///
     /// ```rust
     /// # use cursive::Cursive;
-    /// # use cursive::views::{SelectView};
+    /// # use cursive::views::{Select};
     /// # let mut siv = Cursive::dummy();
     /// use cursive::traits::Identifiable;
     ///
-    /// let select = SelectView::new().item("zero", 0u32).item("one", 1u32);
+    /// let select = Select::new().item("zero", 0u32).item("one", 1u32);
     /// siv.add_layer(select.with_id("select"));
     ///
     /// // Specifying a wrong type will not return anything.
-    /// assert!(siv.find_id::<SelectView<String>>("select").is_none());
+    /// assert!(siv.find_id::<Select<String>>("select").is_none());
     ///
     /// // Omitting the type will use the default type, in this case `String`.
-    /// assert!(siv.find_id::<SelectView>("select").is_none());
+    /// assert!(siv.find_id::<Select>("select").is_none());
     ///
     /// // But with the correct type, it works fine.
-    /// assert!(siv.find_id::<SelectView<u32>>("select").is_some());
+    /// assert!(siv.find_id::<Select<u32>>("select").is_some());
     /// ```
     ///
     /// [`Named`]: views/struct.Named.html
@@ -688,7 +689,7 @@ impl Cursive {
     /// use cursive::{Cursive, views};
     /// let mut siv = Cursive::dummy();
     ///
-    /// siv.add_layer(views::TextView::new("Hello world!"));
+    /// siv.add_layer(views::Text::new("Hello world!"));
     /// ```
     pub fn add_layer<T>(&mut self, view: T)
     where

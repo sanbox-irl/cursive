@@ -16,13 +16,13 @@ use crate::XY;
 /// # Examples
 ///
 /// ```
-/// use cursive::views::{Resized, TextView};
+/// use cursive::views::{Resized, Text};
 ///
-/// // Creates a 20x4 Resized with a TextView content.
-/// let view = Resized::with_fixed_size((20,4), TextView::new("Hello!"));
+/// // Creates a 20x4 Resized with a Text content.
+/// let view = Resized::with_fixed_size((20,4), Text::new("Hello!"));
 /// ```
 ///
-/// See also [`Boxable`](crate::view::Boxable) for an easy way to wrap any view.
+/// See also [`Resizable`](crate::traits::Resizable) for an easy way to wrap any view.
 pub struct Resized<T: View> {
     /// Constraint on each axis
     size: XY<SizeConstraint>,
@@ -222,29 +222,30 @@ impl<T: View> ViewWrapper for Resized<T> {
 #[cfg(test)]
 mod tests {
 
+    use crate::traits::Resizable as _;
     use crate::vec::Vec2;
-    use crate::view::{Boxable, View};
-    use crate::views::DummyView;
+    use crate::view::View;
+    use crate::views::Dummy;
 
     // No need to test `draw()` method as it's directly forwarded.
 
     #[test]
     fn min_size() {
-        let mut min_w = DummyView.full_screen().min_width(5);
+        let mut min_w = Dummy.full_screen().min_width(5);
 
         assert_eq!(Vec2::new(5, 1), min_w.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(5, 10), min_w.required_size(Vec2::new(1, 10)));
         assert_eq!(Vec2::new(10, 1), min_w.required_size(Vec2::new(10, 1)));
         assert_eq!(Vec2::new(10, 10), min_w.required_size(Vec2::new(10, 10)));
 
-        let mut min_h = DummyView.full_screen().min_height(5);
+        let mut min_h = Dummy.full_screen().min_height(5);
 
         assert_eq!(Vec2::new(1, 5), min_h.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(1, 10), min_h.required_size(Vec2::new(1, 10)));
         assert_eq!(Vec2::new(10, 5), min_h.required_size(Vec2::new(10, 1)));
         assert_eq!(Vec2::new(10, 10), min_h.required_size(Vec2::new(10, 10)));
 
-        let mut min_s = DummyView.full_screen().min_size((5, 5));
+        let mut min_s = Dummy.full_screen().min_size((5, 5));
 
         assert_eq!(Vec2::new(5, 5), min_s.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(5, 10), min_s.required_size(Vec2::new(1, 10)));
@@ -254,21 +255,21 @@ mod tests {
 
     #[test]
     fn max_size() {
-        let mut max_w = DummyView.full_screen().max_width(5);
+        let mut max_w = Dummy.full_screen().max_width(5);
 
         assert_eq!(Vec2::new(1, 1), max_w.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(1, 10), max_w.required_size(Vec2::new(1, 10)));
         assert_eq!(Vec2::new(5, 1), max_w.required_size(Vec2::new(10, 1)));
         assert_eq!(Vec2::new(5, 10), max_w.required_size(Vec2::new(10, 10)));
 
-        let mut max_h = DummyView.full_screen().max_height(5);
+        let mut max_h = Dummy.full_screen().max_height(5);
 
         assert_eq!(Vec2::new(1, 1), max_h.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(1, 5), max_h.required_size(Vec2::new(1, 10)));
         assert_eq!(Vec2::new(10, 1), max_h.required_size(Vec2::new(10, 1)));
         assert_eq!(Vec2::new(10, 5), max_h.required_size(Vec2::new(10, 10)));
 
-        let mut max_s = DummyView.full_screen().max_size((5, 5));
+        let mut max_s = Dummy.full_screen().max_size((5, 5));
 
         assert_eq!(Vec2::new(1, 1), max_s.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(1, 5), max_s.required_size(Vec2::new(1, 10)));
@@ -278,7 +279,7 @@ mod tests {
 
     #[test]
     fn full_screen() {
-        let mut full = DummyView.full_screen();
+        let mut full = Dummy.full_screen();
 
         assert_eq!(Vec2::new(1, 1), full.required_size(Vec2::new(1, 1)));
         assert_eq!(Vec2::new(1, 10), full.required_size(Vec2::new(1, 10)));
@@ -288,17 +289,17 @@ mod tests {
 
     #[test]
     fn test_get_inner() {
-        use crate::views::TextView;
+        use crate::views::Text;
 
-        let parent = TextView::new("abc").full_screen();
+        let parent = Text::new("abc").full_screen();
         let child = parent.get_inner();
         assert_eq!(child.get_content().source(), "abc");
     }
     #[test]
     fn test_get_inner_mut() {
-        use crate::views::TextView;
+        use crate::views::Text;
 
-        let mut parent = TextView::new("").full_screen();
+        let mut parent = Text::new("").full_screen();
         let new_value = "new";
         let child = parent.get_inner_mut();
 

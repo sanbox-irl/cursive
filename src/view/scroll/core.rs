@@ -7,7 +7,7 @@ use crate::rect::Rect;
 use crate::theme::ColorStyle;
 use crate::vec::Vec2;
 use crate::view::{ScrollStrategy, Selector, SizeCache};
-use crate::with::With;
+use crate::With as _;
 use crate::XY;
 
 /// Describes an item with a scroll core.
