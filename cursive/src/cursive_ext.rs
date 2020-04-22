@@ -12,10 +12,15 @@
 /// let mut siv = Cursive::default();
 ///
 /// // Or explicitly use a specific backend
+/// #[cfg(feature = "ncurses-backend")]
 /// let mut siv = Cursive::ncurses();
+/// #[cfg(feature = "panncurses-backend")]
 /// let mut siv = Cursive::pancurses();
+/// #[cfg(feature = "termion-backend")]
 /// let mut siv = Cursive::termion();
+/// #[cfg(feature = "crossterm-backend")]
 /// let mut siv = Cursive::crossterm();
+/// #[cfg(feature = "blt-backend")]
 /// let mut siv = Cursive::blt();
 /// ```
 pub trait CursiveExt {
