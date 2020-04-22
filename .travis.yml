@@ -4,6 +4,6 @@ rust:
     - stable
     - nightly
 script:
-    - cargo check --all-features
-    - cargo build --verbose --features "markdown pancurses-backend termion-backend crossterm-backend"
-    - cargo test --verbose --features "markdown pancurses-backend termion-backend crossterm-backend"
+    - cd cursive && cargo check --all-features
+    - cd cursive && cargo build --verbose --features "markdown pancurses-backend termion-backend crossterm-backend"
+    - cd cursive && cargo test --verbose --features "markdown pancurses-backend termion-backend crossterm-backend"
