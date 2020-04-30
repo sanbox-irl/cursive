@@ -62,4 +62,27 @@ impl SpannedString<Style> {
     {
         self.append(Self::styled(text, style));
     }
+
+    /// Appends a plain string on the StyledString.
+    ///
+    /// Chainable variant.
+    pub fn with_plain<S>(mut self, text: S) -> Self
+    where
+        S: Into<String>,
+    {
+        self.append_plain(text);
+        self
+    }
+
+    /// Appends a styled string on the StyledString.
+    ///
+    /// Chainable variant.
+    pub fn with_styled<S, T>(mut self, text: S, style: T) -> Self
+    where
+        S: Into<String>,
+        T: Into<Style>,
+    {
+        self.append_styled(text, style);
+        self
+    }
 }
