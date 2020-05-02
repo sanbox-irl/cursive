@@ -30,6 +30,7 @@ impl<T> SharedState<T> {
 pub struct RadioGroup<T> {
     // Given to every child button
     state: Rc<RefCell<SharedState<T>>>,
+    config: RadioButtonConfig,
 }
 
 impl<T: 'static> Default for RadioGroup<T> {
@@ -39,7 +40,8 @@ impl<T: 'static> Default for RadioGroup<T> {
 }
 
 impl<T: 'static> RadioGroup<T> {
-    /// Creates an empty group for radio buttons.
+    /// Creates an empty group for radio buttons. It will use the default
+    /// [`RadioButtonConfig`] [`DEFAULT_RADIO_BUTTON_CONFIG`].
     pub fn new() -> Self {
         RadioGroup {
             state: Rc::new(RefCell::new(SharedState {
@@ -47,6 +49,19 @@ impl<T: 'static> RadioGroup<T> {
                 values: Vec::new(),
                 on_change: None,
             })),
+            config: DEFAULT_RADIO_BUTTON_CONFIG,
+        }
+    }
+
+    /// Creates an empty group for radio buttons with a [`RadioButtonConfig`].
+    pub fn with_config(config: RadioButtonConfig) -> Self {
+        RadioGroup {
+            state: Rc::new(RefCell::new(SharedState {
+                selection: 0,
+                values: Vec::new(),
+                on_change: None,
+            })),
+            config,
         }
     }
 
@@ -60,7 +75,12 @@ impl<T: 'static> RadioGroup<T> {
     ) -> RadioButton<T> {
         let count = self.state.borrow().values.len();
         self.state.borrow_mut().values.push(Rc::new(value));
-        RadioButton::new(Rc::clone(&self.state), count, label.into())
+        RadioButton::new(
+            Rc::clone(&self.state),
+            count,
+            label.into(),
+            self.config,
+        )
     }
 
     /// Returns the id of the selected button.
@@ -119,6 +139,7 @@ pub struct RadioButton<T> {
     id: usize,
     enabled: bool,
     label: String,
+    config: RadioButtonConfig,
 }
 
 impl<T: 'static> RadioButton<T> {
@@ -128,12 +149,14 @@ impl<T: 'static> RadioButton<T> {
         state: Rc<RefCell<SharedState<T>>>,
         id: usize,
         label: String,
+        config: RadioButtonConfig,
     ) -> Self {
         RadioButton {
             state,
             id,
             enabled: true,
             label,
+            config,
         }
     }
 
@@ -165,24 +188,61 @@ impl<T: 'static> RadioButton<T> {
         })
     }
 
+    /// Sets the selection status of the button.
+    ///
+    /// Chainable variant.
+    pub fn with_selected(self, selection: bool) -> Self {
+        self.with(|s| {
+            // Ignore the potential callback here
+            if selection {
+                s.select();
+            }
+        })
+    }
+
     fn draw_internal(&self, printer: &Printer<'_, '_>) {
-        printer.print((0, 0), "( )");
+        let mut printer_xpos = 0;
+        printer.print((printer_xpos, 0), self.config.left_bracket);
+        printer_xpos += self.config.left_bracket.len();
+
         if self.is_selected() {
-            printer.print((1, 0), "X");
+            printer.print((printer_xpos, 0), self.config.check);
+            printer_xpos += self.config.check.len();
+        } else {
+            printer.print((printer_xpos, 0), self.config.uncheck);
+            printer_xpos += self.config.uncheck.len();
         }
+
+        printer.print((printer_xpos, 0), self.config.right_bracket);
+        printer_xpos += self.config.right_bracket.len();
 
         if !self.label.is_empty() {
             // We want the space to be highlighted if focused
-            printer.print((3, 0), " ");
-            printer.print((4, 0), &self.label);
+            printer.print((printer_xpos, 0), self.config.post_label_space);
+            printer_xpos += self.config.post_label_space.len();
+
+            printer.print((printer_xpos, 0), &self.label);
         }
     }
 
     fn req_size(&self) -> Vec2 {
+        let base_length = self.config.left_bracket.len()
+            + if self.is_selected() {
+                self.config.check.len()
+            } else {
+                self.config.uncheck.len()
+            }
+            + self.config.right_bracket.len();
+
         if self.label.is_empty() {
-            Vec2::new(3, 1)
+            Vec2::new(base_length, 1)
         } else {
-            Vec2::new(3 + 1 + self.label.len(), 1)
+            Vec2::new(
+                base_length
+                    + self.config.post_label_space.len()
+                    + self.label.len(),
+                1,
+            )
         }
     }
 }
@@ -221,4 +281,34 @@ impl<T: 'static> View for RadioButton<T> {
             _ => EventResult::Ignored,
         }
     }
+}
+
+pub const DEFAULT_RADIO_BUTTON_CONFIG: RadioButtonConfig = RadioButtonConfig {
+    check: "X",
+    uncheck: " ",
+    left_bracket: "(",
+    right_bracket: ")",
+    post_label_space: " ",
+};
+
+/// The Configuration of a Radio Button, setting what a "check",
+/// "uncheck", and surrounding bracket pair look like. By default,
+/// a Radio button will have:
+///
+/// `check`: "X"
+///
+/// `uncheck`: " "
+///
+/// `left_bracket`: "("
+///
+/// `right_bracket`: ")"
+///
+/// `post_label_space`: " "
+#[derive(Debug, Clone, Copy)]
+pub struct RadioButtonConfig {
+    pub check: &'static str,
+    pub uncheck: &'static str,
+    pub left_bracket: &'static str,
+    pub right_bracket: &'static str,
+    pub post_label_space: &'static str,
 }
