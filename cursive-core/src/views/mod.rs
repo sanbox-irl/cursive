@@ -115,7 +115,9 @@ pub use self::on_event_view::OnEventView;
 pub use self::padded_view::PaddedView;
 pub use self::panel::Panel;
 pub use self::progress_bar::ProgressBar;
-pub use self::radio::{RadioButton, RadioGroup};
+pub use self::radio::{
+    RadioButton, RadioButtonConfig, RadioGroup, DEFAULT_RADIO_BUTTON_CONFIG,
+};
 pub use self::resized_view::ResizedView;
 pub use self::screens_view::ScreensView;
 pub use self::scroll_view::ScrollView;

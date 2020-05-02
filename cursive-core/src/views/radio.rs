@@ -283,6 +283,8 @@ impl<T: 'static> View for RadioButton<T> {
     }
 }
 
+/// This is the default radio button configuration,
+/// used with the [`RadioGroup::button`] method.
 pub const DEFAULT_RADIO_BUTTON_CONFIG: RadioButtonConfig = RadioButtonConfig {
     check: "X",
     uncheck: " ",
@@ -292,23 +294,40 @@ pub const DEFAULT_RADIO_BUTTON_CONFIG: RadioButtonConfig = RadioButtonConfig {
 };
 
 /// The Configuration of a Radio Button, setting what a "check",
-/// "uncheck", and surrounding bracket pair look like. By default,
-/// a Radio button will have:
-///
-/// `check`: "X"
-///
-/// `uncheck`: " "
-///
-/// `left_bracket`: "("
-///
-/// `right_bracket`: ")"
-///
-/// `post_label_space`: " "
+/// "uncheck", and surrounding bracket pair look like. Although all
+/// the default options are single characters, a user can create
+/// multi-character marks as well.
 #[derive(Debug, Clone, Copy)]
 pub struct RadioButtonConfig {
+    /// A mark for when a RadioButton is selected.
+    ///
+    /// Defaults to `X`.
     pub check: &'static str,
+
+    /// A mark for when a RadioButton is *not* selected.
+    ///
+    /// Default to ` `.
     pub uncheck: &'static str,
+
+    /// A mark for the Left Bracket of a RadioButton.
+    ///
+    /// It defaults to `(`.
     pub left_bracket: &'static str,
+
+    /// A mark for the Right Bracket of a RadioButton.
+    ///
+    /// It defaults to `)`.
     pub right_bracket: &'static str,
+
+    /// A mark for the space between the right bracket and the
+    /// label. For example, if a RadioButton looked like:
+    ///
+    /// ```
+    /// (X) Selected
+    /// ```
+    /// the `post_label_space` is the space character between `)` and
+    /// `S`.
+    ///
+    /// It defaults to ` `.
     pub post_label_space: &'static str,
 }
